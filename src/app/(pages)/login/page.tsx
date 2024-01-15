@@ -26,10 +26,10 @@ export default function Login() {
     router.push("/register");
   };
   return (
-    <div className="h-screen w-screen bg-blue-500">
+    <div className="h-screen w-screen bg-blue-500 flex items-center justify-center">
       {contextHolder}
       <Card
-        className="absolute right-32 top-1/3 h-fit w-60"
+        className="h-fit w-60"
         style={{ position: "absolute" }}
       >
         <Form onFinish={login} className="w-full">

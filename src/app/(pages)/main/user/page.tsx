@@ -67,7 +67,7 @@ const UserList: React.FC = () => {
       key: "image",
     },
     {
-      title: "Action",
+      title: "操作",
       key: "action",
       render: (_, record) => (
         <Space size="middle">

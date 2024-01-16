@@ -4,8 +4,6 @@ import { Button, Popconfirm, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
-import { CreatePost } from "@/app/components/create-post";
-import { log } from "next/dist/server/typescript/utils";
 
 interface DataType {
   id: string;

@@ -65,6 +65,14 @@ model User {
   posts         Post[]
 }
 
+model Menu {
+  id     String  @id @default(cuid())
+  label  String
+  key    String  @unique
+  icon   String
+  parent String?
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique

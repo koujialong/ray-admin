@@ -39,7 +39,10 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const list = await ctx.db.user.findMany();
+      const list = await ctx.db.user.findMany({
+        skip: input.pageSize * (input.pageNum - 1),
+        take: input.pageSize,
+      });
       const total = await ctx.db.user.count();
       return {
         list,

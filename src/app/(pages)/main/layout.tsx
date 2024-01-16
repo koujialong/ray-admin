@@ -3,8 +3,6 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
-  DashboardOutlined,
-  DownOutlined,
 } from "@ant-design/icons";
 import {
   Layout,
@@ -22,21 +20,11 @@ import { PageContext } from "@/app/context/pageContext";
 import { getSession, signOut } from "next-auth/react";
 import { userAtom } from "@/app/store/user";
 import { useAtom } from "jotai";
+import { baseMenu } from "@/app/constant";
+import { api } from "@/trpc/react";
 
 const { Header, Sider, Content } = Layout;
 
-const menuList = [
-  {
-    key: "/main",
-    icon: <DashboardOutlined />,
-    label: "仪表板",
-  },
-  {
-    key: "/main/user",
-    icon: <UserOutlined />,
-    label: "用户列表",
-  },
-];
 export default function RootLayout(res: any) {
   const [collapsed, setCollapsed] = useState(false);
   const {
@@ -44,6 +32,7 @@ export default function RootLayout(res: any) {
   } = theme.useToken();
   const router = useRouter();
 
+  const [menuList, setMenuList] = useState(baseMenu);
   const [selMenu, setSelMenu] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
   const [user, setUser] = useAtom(userAtom);
@@ -66,8 +55,30 @@ export default function RootLayout(res: any) {
     router.push(res.key);
   };
 
+  const menuApi = api.menu.getAllMenu.useMutation({
+    onSuccess(menus) {
+      console.log("菜单", [
+        ...baseMenu,
+        ...menus.map((menu) => ({
+          ...menu,
+          icon: <UserOutlined />,
+          children: menu.child || null,
+        })),
+      ]);
+      setMenuList([
+        ...baseMenu,
+        ...menus.map((menu) => ({
+          ...menu,
+          icon: <UserOutlined />,
+          children: menu.child || null,
+        })),
+      ]);
+    },
+  });
+
   useEffect(() => {
     getUser();
+    menuApi.mutate();
     const matchMenus = menuList.filter(
       (menu) => window.location.href.indexOf(menu.key) !== -1,
     );

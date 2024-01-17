@@ -1,9 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { createElement, useEffect, useState } from "react";
 import { Button, Popconfirm, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
+import * as Icon from "@ant-design/icons";
+import { MENU_TYPE_MAP, STATUS } from "@/app/constant";
+
+const Icons: { [key: string]: any } = Icon;
 
 export interface MenuType {
   id: string;
@@ -16,6 +20,7 @@ export interface MenuType {
 
 const pageSize = 10;
 
+
 const MenuList: React.FC = () => {
   const router = useRouter();
   const [menus, setMenus] = useState<any>({ list: [] });
@@ -23,19 +28,19 @@ const MenuList: React.FC = () => {
   const menuController = api.menu.getMenuList.useMutation({
     onSuccess(data) {
       setMenus(data);
-    },
+    }
   });
   useEffect(() => {
     menuController.mutate({
       pageNum,
-      pageSize,
+      pageSize
     });
   }, []);
 
   const menuDeleteApi = api.menu.deleteMenuById.useMutation({
     onSuccess() {
       menuController.mutate({ pageNum, pageSize });
-    },
+    }
   });
   const deleteMenu = (id: string) => {
     menuDeleteApi.mutate({ id });
@@ -49,27 +54,45 @@ const MenuList: React.FC = () => {
       render: (text, record) => (
         <Button
           type="link"
-          onClick={() => router.push(`/main/menu/view?id=${record.id}`)}
+          onClick={() => router.push(`/main/system/menu/view?id=${record.id}`)}
         >
           {text}
         </Button>
-      ),
+      )
     },
     {
       title: "地址",
       dataIndex: "key",
-      key: "key",
+      key: "key"
+    },
+    {
+      title: "类型",
+      dataIndex: "menuType",
+      key: "menuType",
+      render: (menuType) => MENU_TYPE_MAP[menuType]
+    },
+    {
+      title: "状态",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => STATUS[status]
+    },
+    {
+      title: "排序",
+      dataIndex: "order",
+      key: "order"
     },
     {
       title: "图标",
       dataIndex: "icon",
       key: "icon",
+      render: (icon) => (icon ? createElement(Icons[icon]) : "-")
     },
     {
       title: "父级菜单",
       dataIndex: "id",
       key: "id",
-      render: (text, record) => record.parentMenu?.label || "-",
+      render: (text, record) => record.parentMenu?.label || "-"
     },
     {
       title: "操作",
@@ -87,31 +110,37 @@ const MenuList: React.FC = () => {
           </Popconfirm>
           <Button
             type="link"
-            onClick={() => router.push(`/main/menu/edit?id=${record.id}`)}
+            onClick={() =>
+              router.push(`/main/system/menu/edit?id=${record.id}`)
+            }
           >
             编辑
           </Button>
         </Space>
-      ),
-    },
+      )
+    }
   ];
 
   const changePage = (page: number, pageSize: number) => {
     setPageNum(page);
     menuController.mutate({
       pageNum: page,
-      pageSize,
+      pageSize
     });
   };
 
   return (
     <div>
       <Space className="mb-4">
-        <Button type="primary" onClick={() => router.push(`/main/menu/add`)}>
+        <Button
+          type="primary"
+          onClick={() => router.push(`/main/system/menu/add`)}
+        >
           新增菜单
         </Button>
       </Space>
       <Table
+        loading={menuController.isLoading}
         columns={columns}
         dataSource={menus.list}
         rowKey="id"

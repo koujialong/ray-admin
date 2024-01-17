@@ -2,7 +2,7 @@
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UserOutlined,
+  UserOutlined
 } from "@ant-design/icons";
 import {
   Layout,
@@ -12,28 +12,41 @@ import {
   message,
   Dropdown,
   MenuProps,
-  Space,
+  Space
 } from "antd";
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageContext } from "@/app/context/pageContext";
 import { getSession, signOut } from "next-auth/react";
 import { userAtom } from "@/app/store/user";
 import { useAtom } from "jotai";
-import { baseMenu } from "@/app/constant";
 import { api } from "@/trpc/react";
+import * as Icon from "@ant-design/icons";
+
+const Icons: { [key: string]: any } = Icon;
+
+const setIcon = (menuList: any) => {
+  return menuList.map((menu: any) => {
+    delete menu.menuType;
+    return {
+      ...menu,
+      icon: menu.icon ? createElement(Icons[menu.icon]) : null,
+      children: menu.children ? setIcon(menu.children) : null
+    };
+  });
+};
 
 const { Header, Sider, Content } = Layout;
 
 export default function RootLayout(res: any) {
   const [collapsed, setCollapsed] = useState(false);
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer, borderRadiusLG }
   } = theme.useToken();
   const router = useRouter();
 
-  const [menuList, setMenuList] = useState(baseMenu);
-  const [selMenu, setSelMenu] = useState("");
+  const [menuList, setMenuList] = useState([]);
+  const [selMenu, setSelMenu] = useState<any>();
   const [messageApi, contextHolder] = message.useMessage();
   const [user, setUser] = useAtom(userAtom);
 
@@ -42,54 +55,61 @@ export default function RootLayout(res: any) {
     const { user } = session || {};
 
     user &&
-      setUser({
-        id: user.id,
-        image: user.image as string,
-        email: user.email as string,
-        username: user.name as string,
-      });
+    setUser({
+      id: user.id,
+      image: user.image as string,
+      email: user.email as string,
+      username: user.name as string
+    });
   }
 
   const changeMenu = (res: any) => {
-    setSelMenu(res.key);
+    setSelMenu(res);
     router.push(res.key);
   };
 
   const menuApi = api.menu.getAllMenu.useMutation({
     onSuccess(menus) {
-      console.log("菜单", [
-        ...baseMenu,
+      const menuList = [
         ...menus.map((menu) => ({
           ...menu,
-          icon: <UserOutlined />,
-          children: menu.child || null,
-        })),
-      ]);
-      setMenuList([
-        ...baseMenu,
-        ...menus.map((menu) => ({
-          ...menu,
-          icon: <UserOutlined />,
-          children: menu.child || null,
-        })),
-      ]);
-    },
+          children: menu.children || null
+        }))
+      ];
+      setMenuList(setIcon(menuList));
+
+      let selMenu = { key: "" };
+
+      function getSelMenu(menuInfo: any) {
+        menuInfo.children.forEach((menu: any) => {
+          if (
+            window.location.href.indexOf(menu.key) !== -1 &&
+            menu.key.length > selMenu.key.length
+          ) {
+            selMenu = {
+              ...menu,
+              parent: menuInfo
+            };
+          }
+          menu.children && getSelMenu(menu);
+        });
+      }
+
+      getSelMenu({ children: menus });
+      setSelMenu(selMenu);
+    }
   });
 
   useEffect(() => {
     getUser();
     menuApi.mutate();
-    const matchMenus = menuList.filter(
-      (menu) => window.location.href.indexOf(menu.key) !== -1,
-    );
-    setSelMenu(matchMenus[matchMenus.length - 1]?.key || "");
   }, []);
 
   const items: MenuProps["items"] = [
     {
       label: <span onClick={() => signOut()}>退出登录</span>,
-      key: "0",
-    },
+      key: "0"
+    }
   ];
 
   return (
@@ -97,13 +117,16 @@ export default function RootLayout(res: any) {
       {contextHolder}
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="h-16 w-full text-cyan-50"></div>
-        <Menu
-          onClick={changeMenu}
-          theme="dark"
-          mode="inline"
-          selectedKeys={[selMenu]}
-          items={menuList}
-        />
+        {selMenu && (
+          <Menu
+            defaultOpenKeys={[selMenu.parent?.key || selMenu.key]}
+            onClick={changeMenu}
+            theme="dark"
+            mode="inline"
+            selectedKeys={[selMenu.key]}
+            items={menuList}
+          />
+        )}
       </Sider>
       <Layout>
         <Header
@@ -117,7 +140,7 @@ export default function RootLayout(res: any) {
             style={{
               fontSize: "16px",
               width: 64,
-              height: 64,
+              height: 64
             }}
           />
           <Dropdown menu={{ items }} className="mr-5">
@@ -135,7 +158,7 @@ export default function RootLayout(res: any) {
             padding: 24,
             minHeight: 280,
             background: colorBgContainer,
-            borderRadius: borderRadiusLG,
+            borderRadius: borderRadiusLG
           }}
         >
           <PageContext.Provider value={{ messageApi }}>

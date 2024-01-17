@@ -1,19 +1,12 @@
-import { DashboardOutlined, MenuFoldOutlined, UserOutlined } from "@ant-design/icons";
+import { Tag } from "antd";
+import { JSX } from "react";
 
-export const baseMenu = [
-  {
-    key: "/main",
-    icon: <DashboardOutlined />,
-    label: "仪表板",
-  },
-  {
-    key: "/main/user",
-    icon: <UserOutlined />,
-    label: "用户列表",
-  },
-  {
-    key: "/main/menu",
-    icon: <MenuFoldOutlined />,
-    label: "菜单管理",
-  }
-];
+export const MENU_TYPE_MAP: { [key: string]: JSX.Element } = {
+  M: <Tag color="green">菜单</Tag>,
+  D: <Tag color="blue">目录</Tag>
+};
+
+export const STATUS: { [key: string]: JSX.Element } = {
+  1: <Tag color="red">停用</Tag>,
+  0: <Tag color="green">启用</Tag>
+};

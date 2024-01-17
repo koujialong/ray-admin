@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
+  publicProcedure
 } from "@/server/api/trpc";
 
 export const menuRouter = createTRPCRouter({
@@ -12,25 +12,28 @@ export const menuRouter = createTRPCRouter({
         label: z.string(),
         key: z.string(),
         icon: z.string(),
+        order: z.number(),
         parent: z.string().optional().nullable(),
-      }),
+        menuType: z.string(),
+        status: z.string()
+      })
     )
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.create({
-        data: input,
+        data: input
       });
     }),
   getMenuList: protectedProcedure
     .input(
       z.object({
         pageSize: z.number(),
-        pageNum: z.number(),
-      }),
+        pageNum: z.number()
+      })
     )
     .mutation(async ({ ctx, input }) => {
       let list: any[] = await ctx.db.menu.findMany({
         skip: input.pageSize * (input.pageNum - 1),
-        take: input.pageSize,
+        take: input.pageSize
       });
       let allList = await ctx.db.menu.findMany();
       const total = await ctx.db.user.count();
@@ -41,12 +44,19 @@ export const menuRouter = createTRPCRouter({
       }
       return {
         list,
-        total,
+        total
       };
     }),
 
   getAllMenu: protectedProcedure.mutation(async ({ ctx, input }) => {
-    const list = await ctx.db.menu.findMany();
+    const list = await ctx.db.menu.findMany({
+      where: {
+        status: "0"
+      },
+      orderBy: {
+        order: "asc"
+      }
+    });
     let map: { [key: string]: any } = {};
     list.forEach((row) => {
       map[row.id] = row;
@@ -56,7 +66,7 @@ export const menuRouter = createTRPCRouter({
         const parent = map[row.parent];
         map[row.parent] = {
           ...parent,
-          child: parent.child ? [...parent.child, row] : [row],
+          children: parent.children ? [...parent.children, row] : [row]
         };
       }
     });
@@ -75,21 +85,22 @@ export const menuRouter = createTRPCRouter({
       return ctx.db.menu.findMany({
         where: {
           NOT: {
-            id: input,
+            id: input
           },
-        },
+          parent: null
+        }
       });
     }),
 
   deleteMenuById: protectedProcedure
     .input(
       z.object({
-        id: z.string(),
-      }),
+        id: z.string()
+      })
     )
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.delete({
-        where: input,
+        where: input
       });
     }),
 
@@ -97,7 +108,7 @@ export const menuRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.findFirst({
-        where: input,
+        where: input
       });
     }),
 
@@ -108,15 +119,18 @@ export const menuRouter = createTRPCRouter({
         label: z.string(),
         key: z.string(),
         icon: z.string(),
+        order: z.number(),
         parent: z.string().optional().nullable(),
-      }),
+        menuType: z.string(),
+        status: z.string()
+      })
     )
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.update({
         where: {
-          id: input.id,
+          key: input.key
         },
-        data: input,
+        data: input
       });
-    }),
+    })
 });

@@ -105,6 +105,7 @@ const UserList: React.FC = () => {
         </Button>
       </Space>
       <Table
+        loading={userController.isLoading}
         columns={columns}
         dataSource={users.list}
         rowKey="email"

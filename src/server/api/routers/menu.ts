@@ -95,7 +95,7 @@ export const menuRouter = createTRPCRouter({
   deleteMenuById: protectedProcedure
     .input(
       z.object({
-        id: z.string()
+        key: z.string()
       })
     )
     .mutation(({ ctx, input }) => {

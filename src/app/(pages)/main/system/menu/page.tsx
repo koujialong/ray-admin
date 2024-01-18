@@ -42,8 +42,8 @@ const MenuList: React.FC = () => {
       menuController.mutate({ pageNum, pageSize });
     }
   });
-  const deleteMenu = (id: string) => {
-    menuDeleteApi.mutate({ id });
+  const deleteMenu = (key: string) => {
+    menuDeleteApi.mutate({ key });
   };
 
   const columns: ColumnsType<MenuType> = [
@@ -104,7 +104,7 @@ const MenuList: React.FC = () => {
             description={`确认删除菜单${record.label}?`}
             okText="确认"
             cancelText="取消"
-            onConfirm={() => deleteMenu(record.id)}
+            onConfirm={() => deleteMenu(record.key)}
           >
             <Button type="link">删除</Button>
           </Popconfirm>

@@ -48,7 +48,7 @@ const UserList: React.FC = () => {
       render: (text, record) => (
         <Button
           type="link"
-          onClick={() => router.push(`/main/user/view?id=${record.id}`)}
+          onClick={() => router.push(`/main/system/user/view?id=${record.id}`)}
         >
           {text}
         </Button>
@@ -80,7 +80,7 @@ const UserList: React.FC = () => {
           </Popconfirm>
           <Button
             type="link"
-            onClick={() => router.push(`/main/user/edit?id=${record.id}`)}
+            onClick={() => router.push(`/main/system/user/edit?id=${record.id}`)}
           >
             编辑
           </Button>
@@ -100,7 +100,7 @@ const UserList: React.FC = () => {
   return (
     <div>
       <Space className="mb-4">
-        <Button type="primary" onClick={() => router.push(`/main/user/add`)}>
+        <Button type="primary" onClick={() => router.push(`/main/system/user/add`)}>
           新增用户
         </Button>
       </Space>

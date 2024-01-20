@@ -55,6 +55,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  role          String
   accounts      Account[]
   posts         Post[]
   sessions      Session[]
@@ -77,4 +78,25 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Role {
+  id       String  @id @default(cuid())
+  remark   String?
+  roleName String
+  roleKey  String  @unique(map: "Rule_roleKey_key")
+  order    Int
+  status   String  @db.Char(1)
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+}
+
+model RoleMenu {
+  id     String @id @default(cuid())
+  roleId String
+  menuId String
 }

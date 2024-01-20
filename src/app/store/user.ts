@@ -5,6 +5,7 @@ export interface User {
   username: string;
   image: string;
   email: string;
+  role: string;
 }
 
 export const initialUser = {
@@ -12,6 +13,7 @@ export const initialUser = {
   username: "",
   image: "",
   email: "",
+  role: ""
 };
 
 const user = atom(initialUser);
@@ -20,7 +22,7 @@ export const userAtom = atom(
   (get, set, update: User) => {
     return set(user, {
       ...get(user),
-      ...update,
+      ...update
     });
-  },
+  }
 );

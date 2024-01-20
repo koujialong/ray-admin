@@ -12,7 +12,7 @@ import {
   message,
   Dropdown,
   MenuProps,
-  Space
+  Space, ConfigProvider
 } from "antd";
 import { createElement, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -22,6 +22,7 @@ import { userAtom } from "@/app/store/user";
 import { useAtom } from "jotai";
 import { api } from "@/trpc/react";
 import * as Icon from "@ant-design/icons";
+import zhCN from "antd/es/locale/zh_CN";
 
 const Icons: { [key: string]: any } = Icon;
 
@@ -49,18 +50,22 @@ export default function RootLayout(res: any) {
   const [selMenu, setSelMenu] = useState<any>();
   const [messageApi, contextHolder] = message.useMessage();
   const [user, setUser] = useAtom(userAtom);
+  const userApi = api.user.findUserById.useMutation({
+    onSuccess(user) {
+      user && setUser({
+        id: user.id,
+        image: user.image || "",
+        email: user.email || "",
+        username: user.username,
+        role: user.role
+      });
+    }
+  });
 
   async function getUser() {
     const session = await getSession();
     const { user } = session || {};
-
-    user &&
-    setUser({
-      id: user.id,
-      image: user.image as string,
-      email: user.email as string,
-      username: user.name as string
-    });
+    user && userApi.mutate({ id: user?.id });
   }
 
   const changeMenu = (res: any) => {
@@ -69,9 +74,9 @@ export default function RootLayout(res: any) {
   };
 
   const menuApi = api.menu.getAllMenu.useMutation({
-    onSuccess(menus) {
+    onSuccess(data) {
       const menuList = [
-        ...menus.map((menu) => ({
+        ...data.tree.map((menu) => ({
           ...menu,
           children: menu.children || null
         }))
@@ -95,7 +100,7 @@ export default function RootLayout(res: any) {
         });
       }
 
-      getSelMenu({ children: menus });
+      getSelMenu({ children: data.tree });
       setSelMenu(selMenu);
     }
   });
@@ -161,9 +166,11 @@ export default function RootLayout(res: any) {
             borderRadius: borderRadiusLG
           }}
         >
-          <PageContext.Provider value={{ messageApi }}>
-            {res?.children}
-          </PageContext.Provider>
+          <ConfigProvider locale={zhCN}>
+            <PageContext.Provider value={{ messageApi }}>
+              {res?.children}
+            </PageContext.Provider>
+          </ConfigProvider>
         </Content>
       </Layout>
     </Layout>

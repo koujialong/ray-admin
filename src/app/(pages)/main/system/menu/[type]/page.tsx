@@ -116,7 +116,7 @@ export default function UserDetail({ params }: { params: Params }) {
         <FormItem name="key"
                   label="地址"
                   rules={[{ required: true, message: "请输入地址" }]}>
-          <Input placeholder="地址" disabled={params.type === "edit"}></Input>
+          <Input placeholder="地址" disabled={params.type === "edit" || params.type === "view"}></Input>
         </FormItem>
         <FormItem name="parent" label="父级菜单">
           <Select placeholder="请选择父级菜单">

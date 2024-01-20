@@ -2,8 +2,10 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure
+  publicProcedure,
 } from "@/server/api/trpc";
+import { getSession } from "next-auth/react";
+import { getServerAuthSession } from "@/server/auth";
 
 export const menuRouter = createTRPCRouter({
   addMenu: protectedProcedure
@@ -15,25 +17,25 @@ export const menuRouter = createTRPCRouter({
         order: z.number(),
         parent: z.string().optional().nullable(),
         menuType: z.string(),
-        status: z.string()
-      })
+        status: z.string(),
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.create({
-        data: input
+        data: input,
       });
     }),
   getMenuList: protectedProcedure
     .input(
       z.object({
         pageSize: z.number(),
-        pageNum: z.number()
-      })
+        pageNum: z.number(),
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       let list: any[] = await ctx.db.menu.findMany({
         skip: input.pageSize * (input.pageNum - 1),
-        take: input.pageSize
+        take: input.pageSize,
       });
       let allList = await ctx.db.menu.findMany();
       const total = await ctx.db.user.count();
@@ -44,40 +46,91 @@ export const menuRouter = createTRPCRouter({
       }
       return {
         list,
-        total
+        total,
       };
     }),
 
-  getAllMenu: protectedProcedure.mutation(async ({ ctx, input }) => {
-    const list = await ctx.db.menu.findMany({
-      where: {
-        status: "0"
-      },
-      orderBy: {
-        order: "asc"
-      }
-    });
-    let map: { [key: string]: any } = {};
-    list.forEach((row) => {
-      map[row.id] = row;
-    });
-    list.forEach((row) => {
-      if (row.parent) {
-        const parent = map[row.parent];
-        map[row.parent] = {
-          ...parent,
-          children: parent.children ? [...parent.children, row] : [row]
+  getAllMenu: protectedProcedure
+    .input(
+      z
+        .object({
+          isSetting: z.boolean().optional(),
+        })
+        .default({
+          isSetting: false,
+        }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const list = await ctx.db.menu.findMany({
+        select: {
+          id: true,
+          parent: true,
+          icon: !input.isSetting,
+          label: true,
+          key: true,
+          menuType: true,
+        },
+        where: {
+          status: "0",
+        },
+        orderBy: {
+          order: "asc",
+        },
+      });
+      const session = await getServerAuthSession();
+      const { user } = session || {};
+      let map: { [key: string]: any } = {};
+      const menus = await ctx.db.roleMenu.findMany({
+        where: {
+          roleId: user?.role,
+        },
+        select: {
+          menuId: true,
+        },
+      });
+      const menuKeys = menus.map((menu) => menu.menuId);
+      list.forEach((row) => {
+        const transMenu: any = {
+          ...row,
         };
-      }
-    });
-    const resLis: any[] = [];
-    Object.keys(map).forEach((key) => {
-      if (!map[key].parent) {
-        resLis.push(map[key]);
-      }
-    });
-    return resLis;
-  }),
+        if (input.isSetting) {
+          // transMenu.isLeaf = true;
+          if (menuKeys.includes(row.key)) {
+            map[row.id] = transMenu;
+          }
+        } else {
+          map[row.id] = transMenu;
+        }
+      });
+      list.forEach((row) => {
+        if (row.parent && map[row.parent]) {
+          const parent = map[row.parent];
+          // parent.isLeaf = false;
+          const transRow: any = {
+            ...row,
+          };
+          if (input.isSetting) {
+            // transRow.isLeaf = true;
+          }
+          map[row.parent] = {
+            ...parent,
+            children: parent.children
+              ? [...parent.children, transRow]
+              : [transRow],
+          };
+        }
+      });
+      const tree: any[] = [];
+      Object.keys(map).forEach((key) => {
+        if (!map[key].parent) {
+          tree.push(map[key]);
+        }
+      });
+      return {
+        list,
+        tree,
+      };
+    }),
 
   getOtherAllMenu: protectedProcedure
     .input(z.string())
@@ -85,22 +138,22 @@ export const menuRouter = createTRPCRouter({
       return ctx.db.menu.findMany({
         where: {
           NOT: {
-            id: input
+            id: input,
           },
-          parent: null
-        }
+          parent: null,
+        },
       });
     }),
 
   deleteMenuById: protectedProcedure
     .input(
       z.object({
-        key: z.string()
-      })
+        key: z.string(),
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.delete({
-        where: input
+        where: input,
       });
     }),
 
@@ -108,7 +161,7 @@ export const menuRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.findFirst({
-        where: input
+        where: input,
       });
     }),
 
@@ -122,15 +175,15 @@ export const menuRouter = createTRPCRouter({
         order: z.number(),
         parent: z.string().optional().nullable(),
         menuType: z.string(),
-        status: z.string()
-      })
+        status: z.string(),
+      }),
     )
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.update({
         where: {
-          key: input.key
+          key: input.key,
         },
-        data: input
+        data: input,
       });
-    })
+    }),
 });

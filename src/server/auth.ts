@@ -2,65 +2,63 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import {
   getServerSession,
   type DefaultSession,
-  type NextAuthOptions,
+  type NextAuthOptions
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import { db } from "@/server/db";
 import { api } from "@/trpc/server";
 
+interface IUser {
+  name?: string;
+  email?: string | null;
+  id?: string;
+  image?: string;
+  role: string;
+}
+
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: {
-      id: string;
-    } & DefaultSession["user"];
+    user: User & DefaultSession["user"];
   }
 
-  interface User {
-    name?: string;
-    email?: string | null;
-    id?: string;
-    image?: string;
+  interface User extends IUser {
   }
+}
 
-  interface JWT {
-    /** OpenID ID Token */
-    name?: string;
-    email?: string | null;
-    id?: string;
-    image?: string;
+declare module "next-auth/jwt" {
+  interface JWT extends IUser {
   }
 }
 
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: ({ session, token, user }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-        },
-      };
+      if (token){
+        session.user.role=token.role
+        session.user.id=token.id as string
+      }
+      return session;
     },
     jwt({ token, user, account, profile, isNewUser }) {
-      if (account) {
-        token.accessToken = account.access_token;
+      // if (account) {
+      //   token.accessToken = account.access_token;
+      // }
+      if (user) {
+        token.role = user.role;
+        token.id=token.sub
       }
-      return {
-        ...token,
-        id: token.sub,
-      };
-    },
+      return token;
+    }
   },
   session: {
-    strategy: "jwt",
+    strategy: "jwt"
   },
   pages: {
-    signIn: "/login",
+    signIn: "/login"
   },
   jwt: {
-    maxAge: 60 * 60 * 12,
+    maxAge: 60 * 60 * 12
   },
   debug: process.env.NODE_ENV === "development",
   adapter: PrismaAdapter(db),
@@ -69,7 +67,7 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         name: { label: "name", type: "text" },
-        password: { label: "password", type: "password" },
+        password: { label: "password", type: "password" }
       },
       async authorize(credentials, req): Promise<any> {
         if (typeof credentials !== "undefined") {
@@ -83,9 +81,9 @@ export const authOptions: NextAuthOptions = {
         } else {
           return null;
         }
-      },
-    }),
-  ],
+      }
+    })
+  ]
 };
 
 export const getServerAuthSession = () => getServerSession(authOptions);

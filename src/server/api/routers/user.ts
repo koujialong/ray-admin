@@ -12,6 +12,7 @@ export const userRouter = createTRPCRouter({
         username: z.string(),
         password: z.string(),
         email: z.string(),
+        role: z.string(),
       }),
     )
     .mutation(({ ctx, input }) => {
@@ -76,6 +77,7 @@ export const userRouter = createTRPCRouter({
         id: z.string(),
         username: z.string(),
         password: z.string(),
+        role: z.string(),
       }),
     )
     .mutation(({ ctx, input }) => {

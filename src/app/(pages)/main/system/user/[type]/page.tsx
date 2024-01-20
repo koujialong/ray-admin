@@ -2,7 +2,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/trpc/react";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Button, Form, FormInstance, Input } from "antd";
+import { Button, Form, FormInstance, Input, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { PageContext } from "@/app/context/pageContext";
 import { User, userAtom } from "@/app/store/user";
@@ -17,11 +17,18 @@ export default function UserDetail({ params }: { params: Params }) {
   const searchParams = useSearchParams();
   const id = searchParams.get("id") as string;
   const [user, setUser] = useAtom(userAtom);
+  const [roleOptions, setRoleOptions] = useState<any>([]);
 
   const findUser = api.user.findUserById.useMutation({
     onSuccess(user) {
       form.setFieldsValue(user);
-    },
+    }
+  });
+
+  const getAllRoleApi = api.role.getAllRole.useMutation({
+    onSuccess(data) {
+      setRoleOptions(data);
+    }
   });
 
   const form = Form.useForm()[0];
@@ -29,6 +36,7 @@ export default function UserDetail({ params }: { params: Params }) {
     if (["view", "edit"].includes(params.type)) {
       findUser.mutate({ id });
     }
+    getAllRoleApi.mutate();
   }, []);
 
   const userUpdateApi = api.user.upDateUserById.useMutation({
@@ -40,11 +48,11 @@ export default function UserDetail({ params }: { params: Params }) {
         await messageApi.open({
           type: "success",
           content: "修改用户成功",
-          duration: 0.3,
+          duration: 0.3
         });
         router.back();
       }
-    },
+    }
   });
 
   const { messageApi } = useContext(PageContext);
@@ -54,18 +62,18 @@ export default function UserDetail({ params }: { params: Params }) {
         await messageApi.open({
           type: "success",
           content: "新增用户成功",
-          duration: 0.3,
+          duration: 0.3
         });
         router.back();
       }
-    },
+    }
   });
 
   const submit = (val: any) => {
     if (params.type === "edit") {
       userUpdateApi.mutate({
         ...val,
-        id,
+        id
       });
       return;
     }
@@ -80,12 +88,14 @@ export default function UserDetail({ params }: { params: Params }) {
         disabled={params.type === "view"}
       >
         <FormItem
+          label="用户名"
           name="username"
           rules={[{ required: true, message: "请输入用户名" }]}
         >
           <Input placeholder="用户名"></Input>
         </FormItem>
         <FormItem
+          label="邮箱"
           name="email"
           rules={[{ required: true, message: "请输入邮箱" }]}
         >
@@ -96,10 +106,20 @@ export default function UserDetail({ params }: { params: Params }) {
           ></Input>
         </FormItem>
         <FormItem
+          label="密码"
           name="password"
           rules={[{ required: true, message: "请输入密码" }]}
         >
           <Input type="password" placeholder="密码"></Input>
+        </FormItem>
+        <FormItem name="role" label="用户角色">
+          <Select placeholder="请选择用户角色">
+            {roleOptions.map(({ roleName, roleKey }: any) => (
+              <Select.Option value={roleKey} key={roleKey}>
+                {roleName}
+              </Select.Option>
+            ))}
+          </Select>
         </FormItem>
         {params.type !== "view" && (
           <Form.Item>

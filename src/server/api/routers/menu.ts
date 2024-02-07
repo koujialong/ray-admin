@@ -132,6 +132,44 @@ export const menuRouter = createTRPCRouter({
       };
     }),
 
+  getMenuTree: protectedProcedure.mutation(async ({ ctx, input }) => {
+    const list = await ctx.db.menu.findMany({
+      orderBy: {
+        order: "asc",
+      },
+    });
+    const tree: any[] = [];
+    let map: { [key: string]: any } = {};
+    list.forEach((row) => {
+      const transMenu: any = {
+        ...row,
+      };
+      map[row.id] = transMenu;
+    });
+    list.forEach((row) => {
+      if (row.parent && map[row.parent]) {
+        const parent = map[row.parent];
+        // parent.isLeaf = false;
+        const transRow: any = {
+          ...row,
+        };
+        map[row.parent] = {
+          ...parent,
+          children: parent.children
+            ? [...parent.children, transRow]
+            : [transRow],
+        };
+      }
+    });
+    Object.keys(map).forEach((key) => {
+      if (!map[key].parent) {
+        tree.push(map[key]);
+      }
+    });
+    console.log("res=====>", tree, list);
+    return tree;
+  }),
+
   getOtherAllMenu: protectedProcedure
     .input(z.string())
     .mutation(({ ctx, input }) => {

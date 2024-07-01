@@ -3,8 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Popconfirm, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { api } from "@/trpc/react";
-import { STATUS } from "@/app/constant";
-import RuleModal, { RoleModalRefType } from "@/app/(pages)/main/system/role/components/RoleModal";
+import { STATUS } from "@/app/[locale]/constant";
+import RuleModal, { RoleModalRefType } from "@/app/[locale]/(pages)/main/system/role/components/RoleModal";
 
 
 export interface RoleType {

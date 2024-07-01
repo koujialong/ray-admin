@@ -23,6 +23,7 @@ import { useAtom } from "jotai";
 import { api } from "@/trpc/react";
 import * as Icon from "@ant-design/icons";
 import zhCN from "antd/es/locale/zh_CN";
+import LanguageChanger from "@/app/components/LanguageChanger";
 
 const Icons: { [key: string]: any } = Icon;
 
@@ -148,14 +149,17 @@ export default function RootLayout(res: any) {
               height: 64
             }}
           />
-          <Dropdown menu={{ items }} className="mr-5">
-            <a onClick={(e) => e.preventDefault()}>
-              <Space>
-                {user?.username}
-                <UserOutlined />
-              </Space>
-            </a>
-          </Dropdown>
+          <div className='flex items-center'>
+            <LanguageChanger locale={res.params.locale}/>
+            <Dropdown menu={{ items }} className="mr-5">
+              <a onClick={(e) => e.preventDefault()}>
+                <Space>
+                  {user?.username}
+                  <UserOutlined />
+                </Space>
+              </a>
+            </Dropdown>
+          </div>
         </Header>
         <Content
           style={{

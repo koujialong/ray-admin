@@ -7,8 +7,8 @@ import React, {
 } from "react";
 import { Button, Form, Input, InputNumber, Modal, Radio, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { MENU_TYPE_MAP, STATUS } from "@/app/constant";
-import { MenuType } from "@/app/(pages)/main/system/menu/page";
+import { MENU_TYPE_MAP, STATUS } from "@/app/[locale]/constant";
+import { MenuType } from "@/app/[locale]/(pages)/main/system/menu/page";
 import * as Icon from "@ant-design/icons";
 import { api } from "@/trpc/react";
 import { useSearchParams } from "next/navigation";

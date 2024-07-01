@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import { Tabs } from "antd";
-import HTMLEdit from "@/app/(pages)/main/com/editor/components/HTMLEdit";
-import SQLEdit from "@/app/(pages)/main/com/editor/components/SQLEdit";
-import RechTextEdit from "@/app/(pages)/main/com/editor/components/RechTextEdit";
+import HTMLEdit from "@/app/[locale]/(pages)/main/com/editor/components/HTMLEdit";
+import SQLEdit from "@/app/[locale]/(pages)/main/com/editor/components/SQLEdit";
+import RechTextEdit from "@/app/[locale]/(pages)/main/com/editor/components/RechTextEdit";
 
 function Edit() {
   return <div className="w-full h-full">

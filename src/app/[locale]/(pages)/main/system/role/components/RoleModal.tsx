@@ -3,9 +3,9 @@ import React, { useContext, useImperativeHandle, useRef, useState } from "react"
 import { Form, Input, InputNumber, Modal, Radio } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { PageContext } from "@/app/context/pageContext";
-import { STATUS } from "@/app/constant";
+import { STATUS } from "@/app/[locale]/constant";
 import TextArea from "antd/es/input/TextArea";
-import MenuTree from "@/app/(pages)/main/system/role/components/MenuTree";
+import MenuTree from "@/app/[locale]/(pages)/main/system/role/components/MenuTree";
 
 type ViewType = "edit" | "view" | "add"
 

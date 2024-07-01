@@ -5,10 +5,10 @@ import type { ColumnsType } from "antd/es/table";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import * as Icon from "@ant-design/icons";
-import { MENU_TYPE_MAP, STATUS } from "@/app/constant";
+import { MENU_TYPE_MAP, STATUS } from "@/app/[locale]/constant";
 import MenuModal, {
   MenuModalRefType,
-} from "@/app/(pages)/main/system/menu/components/MenuModal";
+} from "@/app/[locale]/(pages)/main/system/menu/_components/MenuModal";
 
 const Icons: { [key: string]: any } = Icon;
 

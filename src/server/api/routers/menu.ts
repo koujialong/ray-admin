@@ -6,6 +6,7 @@ import {
 } from "@/server/api/trpc";
 import { getSession } from "next-auth/react";
 import { getServerAuthSession } from "@/server/auth";
+import { MenuType } from "@/app/types/menu";
 
 export const menuRouter = createTRPCRouter({
   addMenu: protectedProcedure
@@ -120,7 +121,7 @@ export const menuRouter = createTRPCRouter({
           };
         }
       });
-      const tree: any[] = [];
+      const tree: MenuType[] = [];
       Object.keys(map).forEach((key) => {
         if (!map[key].parent) {
           tree.push(map[key]);

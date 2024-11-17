@@ -6,15 +6,14 @@ import { useTranslation } from "react-i18next";
 import i18nConfig from "../../../i18nConfig";
 import { Select } from "antd";
 
-// @ts-ignore
-export default function  LanguageChanger() {
+export default function LanguageChanger() {
   const { i18n } = useTranslation();
-  const currentLocale = i18n.language;
+  const currentLocale = i18n.language ?? "cn";
   const router = useRouter();
   const currentPathname = usePathname();
 
-  const handleChange = (locale:string) => {
-    const newLocale = locale;
+  const handleChange = (locale: string) => {
+    const newLocale = locale || "cn";
 
     // set cookie for next-i18n-router
     const days = 30;
@@ -39,7 +38,7 @@ export default function  LanguageChanger() {
   };
 
   return (
-    <div className='mr-4'>
+    <div className="mr-4">
       <Select onChange={handleChange} value={currentLocale}>
         <Select.Option value="cn">中文</Select.Option>
         <Select.Option value="en">英文</Select.Option>

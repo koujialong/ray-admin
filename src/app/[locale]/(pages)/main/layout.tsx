@@ -2,7 +2,7 @@
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UserOutlined
+  UserOutlined,
 } from "@ant-design/icons";
 import {
   Layout,
@@ -11,9 +11,11 @@ import {
   theme,
   message,
   Dropdown,
-  MenuProps,
-  Space, ConfigProvider
+  type MenuProps,
+  Space,
+  ConfigProvider,
 } from "antd";
+import { type MenuType } from "@/app/types/menu";
 import { createElement, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageContext } from "@/app/context/pageContext";
@@ -24,17 +26,17 @@ import { api } from "@/trpc/react";
 import * as Icon from "@ant-design/icons";
 import zhCN from "antd/es/locale/zh_CN";
 import LanguageChanger from "@/app/components/LanguageChanger";
+import { type MenuItemType } from "antd/es/menu/hooks/useItems";
 
-const Icons: { [key: string]: any } = Icon;
+const Icons: Record<string, any> = Icon;
 
-const setIcon = (menuList: any) => {
-  return menuList.map((menu: any) => {
+const setIcon = (menuList: Array<MenuType>): MenuType[] => {
+  return menuList.map((menu: MenuType) => {
     delete menu.menuType;
-    return {
-      ...menu,
-      icon: menu.icon ? createElement(Icons[menu.icon]) : null,
-      children: menu.children ? setIcon(menu.children) : null
-    };
+    return Object.assign(menu, {
+      icon: menu.icon ? createElement(Icons[menu.icon as string]) : null,
+      children: menu.children ? setIcon(menu.children) : null,
+    });
   });
 };
 
@@ -43,35 +45,48 @@ const { Header, Sider, Content } = Layout;
 export default function RootLayout(res: any) {
   const [collapsed, setCollapsed] = useState(false);
   const {
-    token: { colorBgContainer, borderRadiusLG }
+    token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const router = useRouter();
 
-  const [menuList, setMenuList] = useState([]);
-  const [selMenu, setSelMenu] = useState<any>();
+  const [menuList, setMenuList] = useState<MenuType[]>([]);
+  const [selMenu, setSelMenu] = useState<MenuType>();
   const [messageApi, contextHolder] = message.useMessage();
   const [user, setUser] = useAtom(userAtom);
   const userApi = api.user.findUserById.useMutation({
     onSuccess(user) {
-      user && setUser({
-        id: user.id,
-        image: user.image || "",
-        email: user.email || "",
-        username: user.username,
-        role: user.role
-      });
-    }
+      user &&
+        setUser({
+          id: user.id,
+          image: user.image ?? "",
+          email: user.email ?? "",
+          username: user.username,
+          role: user.role,
+        });
+    },
   });
+
+  console.log("selMenu", selMenu);
 
   async function getUser() {
     const session = await getSession();
-    const { user } = session || {};
+    const { user } = session ?? {};
     user && userApi.mutate({ id: user?.id });
   }
 
-  const changeMenu = (res: any) => {
-    setSelMenu(res);
+  const changeMenu: MenuProps["onClick"] = (res) => {
+    let menu: MenuType = { children: menuList };
+    const menus: MenuType[] = [];
+    // debugger
+    res.keyPath.reverse().forEach((key) => {
+      menu = menu.children.find((menu) => menu.key === key);
+      // debugger
+      menus.push(menu);
+    });
     router.push(res.key);
+    setSelMenu(
+      menus.length > 1 ? Object.assign(menu, { parent: menus[0] }) : menu,
+    );
   };
 
   const menuApi = api.menu.getAllMenu.useMutation({
@@ -79,22 +94,22 @@ export default function RootLayout(res: any) {
       const menuList = [
         ...data.tree.map((menu) => ({
           ...menu,
-          children: menu.children || null
-        }))
+          children: menu.children ?? null,
+        })),
       ];
       setMenuList(setIcon(menuList));
 
-      let selMenu = { key: "" };
+      let selMenu: MenuType = { key: "" };
 
-      function getSelMenu(menuInfo: any) {
-        menuInfo.children.forEach((menu: any) => {
+      function getSelMenu(menuInfo: MenuType) {
+        menuInfo.children.forEach((menu: MenuType) => {
           if (
             window.location.href.indexOf(menu.key) !== -1 &&
             menu.key.length > selMenu.key.length
           ) {
             selMenu = {
               ...menu,
-              parent: menuInfo
+              parent: menuInfo,
             };
           }
           menu.children && getSelMenu(menu);
@@ -103,19 +118,20 @@ export default function RootLayout(res: any) {
 
       getSelMenu({ children: data.tree });
       setSelMenu(selMenu);
-    }
+    },
   });
 
   useEffect(() => {
-    getUser();
-    menuApi.mutate();
+    getUser()
+      .then(() => menuApi.mutate())
+      .catch((e) => console.log(e));
   }, []);
 
   const items: MenuProps["items"] = [
     {
       label: <span onClick={() => signOut()}>退出登录</span>,
-      key: "0"
-    }
+      key: "0",
+    },
   ];
 
   return (
@@ -130,7 +146,7 @@ export default function RootLayout(res: any) {
             theme="dark"
             mode="inline"
             selectedKeys={[selMenu.key]}
-            items={menuList}
+            items={menuList as MenuItemType[]}
           />
         )}
       </Sider>
@@ -139,18 +155,24 @@ export default function RootLayout(res: any) {
           style={{ background: colorBgContainer, padding: 0 }}
           className="flex items-center justify-between text-white"
         >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: "16px",
-              width: 64,
-              height: 64
-            }}
-          />
-          <div className='flex items-center'>
-            <LanguageChanger locale={res.params.locale}/>
+          <div className="flex items-center">
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+              }}
+            />
+            <div>
+              {selMenu?.parent?.label ? selMenu?.parent?.label + " / " : ""}
+              {selMenu?.label}
+            </div>
+          </div>
+          <div className="flex items-center">
+            <LanguageChanger/>
             <Dropdown menu={{ items }} className="mr-5">
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
@@ -167,7 +189,7 @@ export default function RootLayout(res: any) {
             padding: 24,
             minHeight: 280,
             background: colorBgContainer,
-            borderRadius: borderRadiusLG
+            borderRadius: borderRadiusLG,
           }}
         >
           <ConfigProvider locale={zhCN}>

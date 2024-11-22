@@ -1,0 +1,10 @@
+{
+  "仪表板": "dashboard",
+  "组件": "components",
+  "系统管理": "system",
+  "菜单管理": "menu",
+  "用户管理": "user",
+  "角色管理": "role",
+  "编辑器": "editor",
+  "表格": "table"
+}

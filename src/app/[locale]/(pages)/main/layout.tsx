@@ -18,15 +18,16 @@ import {
 import { type MenuType } from "@/app/types/menu";
 import { createElement, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { PageContext } from "@/app/context/pageContext";
+import { PageContext } from "@/app/context/pagec-context";
 import { getSession, signOut } from "next-auth/react";
 import { userAtom } from "@/app/store/user";
 import { useAtom } from "jotai";
 import { api } from "@/trpc/react";
 import * as Icon from "@ant-design/icons";
 import zhCN from "antd/es/locale/zh_CN";
-import LanguageChanger from "@/app/components/LanguageChanger";
+import LanguageChanger from "@/app/components/language-changer";
 import { type MenuItemType } from "antd/es/menu/hooks/useItems";
+import { useTranslation } from "react-i18next";
 
 const Icons: Record<string, any> = Icon;
 
@@ -42,7 +43,8 @@ const setIcon = (menuList: Array<MenuType>): MenuType[] => {
 
 const { Header, Sider, Content } = Layout;
 
-export default function RootLayout(res: any) {
+export default function RootLayout({ children, params: { locale } }) {
+  console.log("RootLayout", locale);
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -53,6 +55,8 @@ export default function RootLayout(res: any) {
   const [selMenu, setSelMenu] = useState<MenuType>();
   const [messageApi, contextHolder] = message.useMessage();
   const [user, setUser] = useAtom(userAtom);
+  const { t } = useTranslation("menu");
+
   const userApi = api.user.findUserById.useMutation({
     onSuccess(user) {
       user &&
@@ -66,8 +70,6 @@ export default function RootLayout(res: any) {
     },
   });
 
-  console.log("selMenu", selMenu);
-
   async function getUser() {
     const session = await getSession();
     const { user } = session ?? {};
@@ -77,10 +79,8 @@ export default function RootLayout(res: any) {
   const changeMenu: MenuProps["onClick"] = (res) => {
     let menu: MenuType = { children: menuList };
     const menus: MenuType[] = [];
-    // debugger
     res.keyPath.reverse().forEach((key) => {
       menu = menu.children.find((menu) => menu.key === key);
-      // debugger
       menus.push(menu);
     });
     router.push(res.key);
@@ -92,10 +92,19 @@ export default function RootLayout(res: any) {
   const menuApi = api.menu.getAllMenu.useMutation({
     onSuccess(data) {
       const menuList = [
-        ...data.tree.map((menu) => ({
-          ...menu,
-          children: menu.children ?? null,
-        })),
+        ...data.tree.map((menu) => {
+          const children = menu.children
+            ? menu.children.map((menu) => ({
+                ...menu,
+                label: t(menu?.label),
+              }))
+            : null;
+          return {
+            ...menu,
+            children,
+            label: t(menu?.label),
+          };
+        }),
       ];
       setMenuList(setIcon(menuList));
 
@@ -110,6 +119,7 @@ export default function RootLayout(res: any) {
             selMenu = {
               ...menu,
               parent: menuInfo,
+              label: t(menu?.label),
             };
           }
           menu.children && getSelMenu(menu);
@@ -121,6 +131,10 @@ export default function RootLayout(res: any) {
     },
   });
 
+  const reloadMenu = () => {
+    menuApi.mutate();
+  };
+
   useEffect(() => {
     getUser()
       .then(() => menuApi.mutate())
@@ -129,7 +143,9 @@ export default function RootLayout(res: any) {
 
   const items: MenuProps["items"] = [
     {
-      label: <span onClick={() => signOut()}>退出登录</span>,
+      label: (
+        <span onClick={() => signOut({ callbackUrl: "/login" })}>退出登录</span>
+      ),
       key: "0",
     },
   ];
@@ -172,7 +188,7 @@ export default function RootLayout(res: any) {
             </div>
           </div>
           <div className="flex items-center">
-            <LanguageChanger/>
+            <LanguageChanger />
             <Dropdown menu={{ items }} className="mr-5">
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
@@ -193,8 +209,8 @@ export default function RootLayout(res: any) {
           }}
         >
           <ConfigProvider locale={zhCN}>
-            <PageContext.Provider value={{ messageApi }}>
-              {res?.children}
+            <PageContext.Provider value={{ messageApi, reloadMenu }}>
+              {children}
             </PageContext.Provider>
           </ConfigProvider>
         </Content>

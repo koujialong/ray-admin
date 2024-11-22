@@ -99,7 +99,7 @@ export const roleRouter = createTRPCRouter({
       });
       return await Promise.all(
         menuIds.map(async (menuId) => {
-          return await ctx.db.roleMenu.create({
+          return ctx.db.roleMenu.create({
             data: {
               roleId,
               menuId
@@ -114,7 +114,7 @@ export const roleRouter = createTRPCRouter({
         roleId: z.string(),
       })
     ).mutation(async ({ ctx, input }) => {
-      return await ctx.db.roleMenu.findMany({
+      return ctx.db.roleMenu.findMany({
         where: input,
         select: {
           menuId: true

@@ -5,7 +5,9 @@ import { cookies } from "next/headers";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-
+import TranslationsProvider from "../providers/translations-provider";
+import initTranslations from "../i18n";
+const i18nNamespaces = ["common",'menu'];
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -17,16 +19,24 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children, params: { locale } }) {
+  const { resources } = await initTranslations(
+    locale as string,
+    i18nNamespaces,
+  );
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider cookies={cookies().toString()}>
-            <AntdRegistry>{children}</AntdRegistry>
+          <AntdRegistry>
+            <TranslationsProvider
+              namespaces={i18nNamespaces}
+              locale={locale as string}
+              resources={resources}
+            >
+              {children}
+            </TranslationsProvider>
+          </AntdRegistry>
         </TRPCReactProvider>
       </body>
     </html>

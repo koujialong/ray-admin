@@ -1,21 +1,13 @@
 "use client";
-import React, {
-  createElement,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createElement, useEffect, useRef, useState } from "react";
 import { Button, Popconfirm, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import * as Icon from "@ant-design/icons";
-import { MENU_TYPE_MAP, STATUS } from "@/app/[locale]/constant";
-import MenuModal, {
-  MenuModalRefType,
-} from "@/app/[locale]/(pages)/main/system/menu/_components/MenuModal";
-import { PageContext } from "@/app/context/page-context";
+import { MENU_TYPE_MAP, STATUS } from "@/app/constant";
+import RuleModal, { RoleModalRefType } from "@/app/(pages)/main/system/role/components/RoleModal";
+import { log } from "next/dist/server/typescript/utils";
 
 const Icons: { [key: string]: any } = Icon;
 
@@ -28,28 +20,32 @@ export interface MenuType {
   parentMenu?: MenuType | null;
 }
 
+const pageSize = 10;
+
+
 const MenuList: React.FC = () => {
   const router = useRouter();
-  const menuModalRef = useRef<MenuModalRefType>(null);
-  const [menus, setMenus] = useState<any>([]);
-  const { messageApi, reloadMenu } = useContext(PageContext);
-  const menuController = api.menu.getMenuTree.useMutation({
+  const [menus, setMenus] = useState<any>({ list: [] });
+  const [pageNum, setPageNum] = useState(1);
+  const ruleModalRef = useRef<RoleModalRefType>(null);
+  const menuController = api.menu.getMenuList.useMutation({
     onSuccess(data) {
       setMenus(data);
-    },
+    }
   });
   useEffect(() => {
-    menuController.mutate();
+    menuController.mutate({
+      pageNum,
+      pageSize
+    });
   }, []);
 
   const menuDeleteApi = api.menu.deleteMenuById.useMutation({
     onSuccess() {
-      menuController.mutate();
-      reloadMenu();
-      messageApi.success('删除成功！')
-    },
+      menuController.mutate({ pageNum, pageSize });
+    }
   });
-  const deleteMenu = async (key: string) => {
+  const deleteMenu = (key: string) => {
     menuDeleteApi.mutate({ key });
   };
 
@@ -58,36 +54,48 @@ const MenuList: React.FC = () => {
       title: "标题",
       dataIndex: "label",
       key: "label",
-      width: 200,
+      render: (text, record) => (
+        <Button
+          type="link"
+          onClick={() => router.push(`/main/system/menu/view?id=${record.id}`)}
+        >
+          {text}
+        </Button>
+      )
     },
     {
       title: "地址",
       dataIndex: "key",
-      key: "key",
-      width: 300,
+      key: "key"
     },
     {
       title: "类型",
       dataIndex: "menuType",
       key: "menuType",
-      render: (menuType) => MENU_TYPE_MAP[menuType],
+      render: (menuType) => MENU_TYPE_MAP[menuType]
     },
     {
       title: "状态",
       dataIndex: "status",
       key: "status",
-      render: (status) => STATUS[status],
+      render: (status) => STATUS[status]
     },
     {
       title: "排序",
       dataIndex: "order",
-      key: "order",
+      key: "order"
     },
     {
       title: "图标",
       dataIndex: "icon",
       key: "icon",
-      render: (icon) => (icon ? createElement(Icons[icon]) : "-"),
+      render: (icon) => (icon ? createElement(Icons[icon]) : "-")
+    },
+    {
+      title: "父级菜单",
+      dataIndex: "id",
+      key: "id",
+      render: (text, record) => record.parentMenu?.label || "-"
     },
     {
       title: "操作",
@@ -106,34 +114,42 @@ const MenuList: React.FC = () => {
           <Button
             type="link"
             onClick={() =>
-              menuModalRef?.current?.setModal(true, "edit", record.id)
+              router.push(`/main/system/menu/edit?id=${record.id}`)
             }
           >
             编辑
           </Button>
         </Space>
-      ),
-    },
+      )
+    }
   ];
+
+  const changePage = (page: number, pageSize: number) => {
+    setPageNum(page);
+    menuController.mutate({
+      pageNum: page,
+      pageSize
+    });
+  };
 
   return (
     <>
       <Space className="mb-4">
         <Button
           type="primary"
-          onClick={() => menuModalRef?.current?.setModal(true, "add")}
+          onClick={() => ruleModalRef.current?.setModel(true, "add")}
         >
-          新增菜单
+          新增角色
         </Button>
       </Space>
       <Table
         loading={menuController.isLoading}
         columns={columns}
-        dataSource={menus}
+        dataSource={menus.list}
         rowKey="id"
-        pagination={false}
+        pagination={{ total: menus.total, pageSize, onChange: changePage }}
       />
-      <MenuModal ref={menuModalRef} reloadList={menuController.mutate} />
+      <RuleModal ref={ruleModalRef} />
     </>
   );
 };

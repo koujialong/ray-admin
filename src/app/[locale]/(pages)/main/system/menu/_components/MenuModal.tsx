@@ -11,7 +11,7 @@ import { MENU_TYPE_MAP, STATUS } from "@/app/[locale]/constant";
 import { MenuType } from "@/app/[locale]/(pages)/main/system/menu/page";
 import * as Icon from "@ant-design/icons";
 import { api } from "@/trpc/react";
-import { PageContext } from "@/app/context/pagec-context";
+import { PageContext } from "@/app/context/page-context";
 
 const Icons: { [key: string]: any } = Icon;
 

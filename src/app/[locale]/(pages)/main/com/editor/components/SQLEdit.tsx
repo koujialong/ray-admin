@@ -16,8 +16,8 @@ export default function() {
         { label: "match", type: "keyword" },
         { label: "hello", type: "variable", info: "(World)" },
         { label: "magic", type: "text", apply: "⠁⭒*.✩.*⭒⠁", detail: "macro" },
-        { label: "sql.user", type: "variable", apply: "select * from user", info: "用户查询SQL" },
-        { label: "sql.car", type: "variable", apply: "select * from car", info: "汽车查询SQL" }
+        { label: "sql.user", type: "variable", apply: "select.tsx * from user", info: "用户查询SQL" },
+        { label: "sql.car", type: "variable", apply: "select.tsx * from car", info: "汽车查询SQL" }
       ]
     };
   };

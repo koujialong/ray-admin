@@ -5,14 +5,13 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import { Button, Form, Input, InputNumber, Modal, Radio, Select } from "antd";
+import { Form, Input, InputNumber, Modal, Radio, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { MENU_TYPE_MAP, STATUS } from "@/app/[locale]/constant";
 import { MenuType } from "@/app/[locale]/(pages)/main/system/menu/page";
 import * as Icon from "@ant-design/icons";
 import { api } from "@/trpc/react";
-import { useSearchParams } from "next/navigation";
-import { PageContext } from "@/app/context/pageContext";
+import { PageContext } from "@/app/context/pagec-context";
 
 const Icons: { [key: string]: any } = Icon;
 
@@ -28,8 +27,8 @@ export interface MenuModalType {
 
 export default React.forwardRef<MenuModalRefType, MenuModalType>(
   (params, ref) => {
-    const searchParams = useSearchParams();
-    const id = searchParams.get("id") as string;
+    const { reloadList } = params;
+    const [id, setId] = useState(null);
     const [open, setOpen] = useState(false);
     const [menuOption, setMenuOption] = useState<MenuType[]>([]);
     const [viewType, setViewType] = useState<ViewType>("add");
@@ -37,8 +36,9 @@ export default React.forwardRef<MenuModalRefType, MenuModalType>(
       setOpen(open);
       setViewType(type);
       if (open) {
-        form.resetFields()
+        form.resetFields();
         if (id && ["view", "edit"].includes(type)) {
+          setId(id);
           findMenu.mutate({ id });
         }
       }
@@ -56,7 +56,7 @@ export default React.forwardRef<MenuModalRefType, MenuModalType>(
       },
     });
 
-    const { messageApi } = useContext(PageContext);
+    const { messageApi, reloadMenu } = useContext(PageContext);
     const menuUpdateApi = api.menu.upDateMenuById.useMutation({
       async onSuccess(data) {
         if (data.id) {
@@ -65,6 +65,8 @@ export default React.forwardRef<MenuModalRefType, MenuModalType>(
             content: "修改菜单成功",
             duration: 0.3,
           });
+          reloadList();
+          reloadMenu();
           setOpen(false);
         }
       },
@@ -78,6 +80,8 @@ export default React.forwardRef<MenuModalRefType, MenuModalType>(
             content: "新增菜单成功",
             duration: 0.3,
           });
+          reloadList();
+          reloadMenu();
           setOpen(false);
         }
       },
@@ -103,14 +107,15 @@ export default React.forwardRef<MenuModalRefType, MenuModalType>(
     );
 
     const submit = async (val: any) => {
+      const info = await form.validateFields();
       if (viewType === "edit") {
         menuUpdateApi.mutate({
-          ...val,
+          ...info,
           id,
         });
         return;
       }
-      addMenuApi.mutate(val);
+      addMenuApi.mutate(info);
     };
 
     useImperativeHandle(ref, () => ({ setModal }), []);
@@ -132,7 +137,6 @@ export default React.forwardRef<MenuModalRefType, MenuModalType>(
           wrapperCol={{ span: 20 }}
           style={{ maxWidth: 600 }}
           disabled={viewType === "view"}
-          onFinish={submit}
         >
           <FormItem
             name="label"
@@ -178,7 +182,7 @@ export default React.forwardRef<MenuModalRefType, MenuModalType>(
               ))}
             </Radio.Group>
           </FormItem>
-          <FormItem name="icon" label="图标">
+          <FormItem name="icon" label="图标" rules={[{ required: true }]}>
             <Select placeholder="请选择图标" showSearch>
               {icons.map(({ value, label }) => (
                 <Select.Option value={value} key={value}>

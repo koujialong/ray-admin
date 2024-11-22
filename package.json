@@ -33,6 +33,7 @@
     "@wangeditor/editor-for-react": "^1.0.6",
     "antd": "^5.12.8",
     "i18next": "^23.8.2",
+    "i18next-resources-to-backend": "^1.2.1",
     "jotai": "^2.6.1",
     "next": "^14.0.4",
     "next-auth": "^4.24.5",

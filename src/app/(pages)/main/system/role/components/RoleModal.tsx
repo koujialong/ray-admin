@@ -1,47 +1,41 @@
+import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/trpc/react";
-import React, { useContext, useImperativeHandle, useRef, useState } from "react";
+import React, { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Form, Input, InputNumber, Modal, Radio } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { PageContext } from "@/app/context/page-context";
-import { STATUS } from "@/app/[locale]/constant";
+import { PageContext } from "@/app/context/pageContext";
+import { MenuType } from "@/app/(pages)/main/system/menu/page";
+import { STATUS } from "@/app/constant";
 import TextArea from "antd/es/input/TextArea";
-import MenuTree from "@/app/[locale]/(pages)/main/system/role/components/MenuTree";
+
+
+type Payload = {
+  onOk?(): void;
+  onCancel?(): void;
+  [others: string]: any;
+};
 
 type ViewType = "edit" | "view" | "add"
 
 export interface RoleModalRefType {
-  setModel(open: Boolean, type: ViewType, id?: string): void;
+  setModel(open: Boolean, type: ViewType): void;
 }
 
 export interface RoleModalType {
-  reloadList: () => void;
 }
 
 export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id") as string;
+  const [menuOption, setMenuOption] = useState<MenuType[]>([]);
+  const payloadRef = useRef<Payload>({});
   const [open, setOpen] = useState(false);
   const [viewType, setViewType] = useState<ViewType>("add");
-  const [id, setId] = useState<string>();
-  const [selMenus, setSelMenus] = useState<string[]>([]);
-  const form = Form.useForm()[0];
 
-  const setModel = (open: boolean, type: ViewType, id?: string) => {
+  const setModel = (open: boolean, type: ViewType) => {
     setOpen(open);
     setViewType(type);
-    id && setId(id);
-    if (open) {
-      form.setFieldsValue({
-        status: "0",
-        remark: "",
-        roleName: "",
-        roleKey: "",
-        order: 1
-      });
-      setSelMenus([]);
-      if (id && ["view", "edit"].includes(type)) {
-        findRole.mutate({ id });
-        getRuleMenuApi.mutate({ roleId: id });
-      }
-    }
   };
 
   useImperativeHandle(
@@ -52,22 +46,44 @@ export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) =
     []
   );
 
-  const findRole = api.role.findRoleById.useMutation({
+  const showModal = () => {
+
+  };
+
+
+  const findMenu = api.menu.findMenuById.useMutation({
     onSuccess(menu) {
       form.setFieldsValue(menu);
     }
   });
 
-  const roleUpdateApi = api.role.upDateRoleById.useMutation({
+  const allMenuApi = api.menu.getOtherAllMenu.useMutation({
+    onSuccess(menus) {
+      setMenuOption(menus);
+    }
+  });
+
+  const form = Form.useForm()[0];
+  useEffect(() => {
+    form.setFieldsValue({
+      menuType: "D",
+      status: "0"
+    });
+    if (["view", "edit"].includes(viewType)) {
+      findMenu.mutate({ id });
+    }
+    allMenuApi.mutate(id || "");
+  }, []);
+
+  const menuUpdateApi = api.menu.upDateMenuById.useMutation({
     async onSuccess(data) {
       if (data.id) {
         await messageApi.open({
           type: "success",
-          content: "修改角色成功",
+          content: "修改菜单成功",
           duration: 0.3
         });
-        setOpen(false);
-        params.reloadList();
+        router.back();
       }
     }
   });
@@ -76,49 +92,27 @@ export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) =
   const addMenuApi = api.role.addRole.useMutation({
     async onSuccess(data) {
       if (data.id) {
-        addRuleMenuApi.mutate({
-          roleId: data.roleKey,
-          menuIds: selMenus
-        });
         await messageApi.open({
           type: "success",
           content: "新增角色成功",
           duration: 0.3
         });
-        setOpen(false);
-        params.reloadList();
+        // router.back();
       }
-    }
-  });
-
-  const getRuleMenuApi = api.role.getRuleMenu.useMutation({
-    onSuccess(data) {
-      setSelMenus(data.map(it => it.menuId));
-    }
-  });
-
-
-  const addRuleMenuApi = api.role.addRuleMenu.useMutation({
-    onSuccess() {
-
     }
   });
 
   const submit = async () => {
     await form.validateFields();
-    const role = form.getFieldsValue();
-    if (viewType === "edit" && id) {
-      roleUpdateApi.mutate({
-        ...role,
+    const rule = form.getFieldsValue();
+    if (viewType === "edit") {
+      menuUpdateApi.mutate({
+        ...rule,
         id
-      });
-      addRuleMenuApi.mutate({
-        roleId: role.roleKey,
-        menuIds: selMenus
       });
       return;
     }
-    addMenuApi.mutate(role);
+    addMenuApi.mutate(rule);
   };
   return (
     <Modal title="角色" open={open} onOk={submit} onCancel={() => setOpen(false)}
@@ -160,15 +154,13 @@ export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) =
               <Radio value={key} key={key}>{STATUS[key]}</Radio>)}
           </Radio.Group>
         </FormItem>
-        <FormItem label="菜单权限">
-          <MenuTree selMenus={selMenus} setSelMenus={setSelMenus} />
-        </FormItem>
         <FormItem
           name="remark"
           label="备注"
         >
           <TextArea placeholder="备注"></TextArea>
         </FormItem>
+
       </Form>
     </Modal>
   );

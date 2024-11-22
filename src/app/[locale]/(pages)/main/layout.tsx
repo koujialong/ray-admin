@@ -18,7 +18,7 @@ import {
 import { type MenuType } from "@/app/types/menu";
 import { createElement, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { PageContext } from "@/app/context/pagec-context";
+import { PageContext } from "@/app/context/page-context";
 import { getSession, signOut } from "next-auth/react";
 import { userAtom } from "@/app/store/user";
 import { useAtom } from "jotai";

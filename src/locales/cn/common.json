@@ -2,5 +2,12 @@
   "ok": "确认",
   "chinese": "中文",
   "english": "english",
-  "仪表板": "仪表板"
+  "sign in": "登录",
+  "register": "注册",
+  "sign out": "退出登录",
+  "username": "用户名",
+  "password": "密码",
+  "email": "邮箱",
+  "please input": "请输入",
+  "error": "错误"
 }

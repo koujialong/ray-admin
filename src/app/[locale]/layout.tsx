@@ -7,7 +7,11 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import TranslationsProvider from "../providers/translations-provider";
 import initTranslations from "../i18n";
-const i18nNamespaces = ["common",'menu'];
+import { Suspense } from "react";
+import Loading from "./loading";
+import { ThemeProvider } from "next-themes";
+import AntdProvider from "../providers/antd-provider";
+const i18nNamespaces = ["common", "menu"];
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -28,15 +32,19 @@ export default async function RootLayout({ children, params: { locale } }) {
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider cookies={cookies().toString()}>
-          <AntdRegistry>
-            <TranslationsProvider
-              namespaces={i18nNamespaces}
-              locale={locale as string}
-              resources={resources}
-            >
-              {children}
-            </TranslationsProvider>
-          </AntdRegistry>
+          <ThemeProvider attribute="class" themes={["light", "dark"]} defaultTheme="dark">
+            <AntdRegistry>
+              <AntdProvider>
+                <TranslationsProvider
+                  namespaces={i18nNamespaces}
+                  locale={locale as string}
+                  resources={resources}
+                >
+                  <Suspense fallback={<Loading />}>{children}</Suspense>
+                </TranslationsProvider>
+              </AntdProvider>
+            </AntdRegistry>
+          </ThemeProvider>
         </TRPCReactProvider>
       </body>
     </html>

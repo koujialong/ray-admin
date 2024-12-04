@@ -13,25 +13,16 @@ import { useRouter } from "next/navigation";
 import * as Icon from "@ant-design/icons";
 import { MENU_TYPE_MAP, STATUS } from "@/app/[locale]/constant";
 import MenuModal, {
-  MenuModalRefType,
+  type MenuModalRefType,
 } from "@/app/[locale]/(pages)/main/system/menu/_components/MenuModal";
 import { PageContext } from "@/app/context/page-context";
+import { type MenuType } from "@/app/types/menu";
 
-const Icons: { [key: string]: any } = Icon;
-
-export interface MenuType {
-  id: string;
-  label: string;
-  key: string;
-  icon: string;
-  parent?: string | null;
-  parentMenu?: MenuType | null;
-}
+const Icons: typeof Icon = Icon;
 
 const MenuList: React.FC = () => {
-  const router = useRouter();
   const menuModalRef = useRef<MenuModalRefType>(null);
-  const [menus, setMenus] = useState<any>([]);
+  const [menus, setMenus] = useState<Array<MenuType>>([]);
   const { messageApi, reloadMenu } = useContext(PageContext);
   const menuController = api.menu.getMenuTree.useMutation({
     onSuccess(data) {
@@ -46,14 +37,14 @@ const MenuList: React.FC = () => {
     onSuccess() {
       menuController.mutate();
       reloadMenu();
-      messageApi.success('删除成功！')
+      messageApi.success("删除成功！");
     },
   });
   const deleteMenu = async (key: string) => {
     menuDeleteApi.mutate({ key });
   };
 
-  const columns: ColumnsType<MenuType> = [
+  const columns: ColumnsType<MenuType & { id: string }> = [
     {
       title: "标题",
       dataIndex: "label",

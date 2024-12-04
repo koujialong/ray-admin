@@ -8,10 +8,10 @@ void i18next.use(initReactI18next).init({
   debug: true,
   resources: {
     en: {
-      common:import(`@/locales/en/common.json`),
+      common: import(`@/locales/en/common.json`),
     },
     cn: {
-      common:import(`@/locales/cn/common.json`),
+      common: import(`@/locales/cn/common.json`),
     },
   },
   // if you see an error like: "Argument of type 'DefaultTFuncReturn' is not assignable to parameter of type xyz"
@@ -20,7 +20,10 @@ void i18next.use(initReactI18next).init({
 });
 
 function getLanguageRoute(): string | null {
-  const url = window.location.href;
+  if (typeof window === "undefined") {
+    return null; // 在服务器端返回 null 或其他默认值
+  }
+  const url = window?.location?.href;
   const urlObj = new URL(url);
   const path = urlObj.pathname;
 
@@ -34,6 +37,4 @@ function getLanguageRoute(): string | null {
   return null;
 }
 
-export {
-  getLanguageRoute,
-}
+export { getLanguageRoute };

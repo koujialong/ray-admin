@@ -1,10 +1,9 @@
 import { getToken } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
-import { i18nRouter } from 'next-i18n-router';
-// import i18nConfig from './i18nConfig';
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
   console.log('中间件app');
+  console.time('routerTime')
   const token = await getToken({
     req: request,
     secret: process?.env?.NEXTAUTH_SECRET,
@@ -14,12 +13,10 @@ export async function middleware(request: NextRequest) {
     return  NextResponse.redirect(new URL("/login", request.nextUrl.origin));
   }
 
+  console.timeEnd('routerTime')
   return  NextResponse.next();
-  // console.error('i18n =>',i18nRouter(request, i18nConfig));
-  // return i18nRouter(request, i18nConfig);
 }
 
 export const config = {
   matcher: ["/:locale/main/:path*"],
-  // matcher: '/((?!api|static|.*\\..*|_next).*)'
 };

@@ -14,9 +14,10 @@ import {
   type MenuProps,
   Space,
   ConfigProvider,
+  MenuTheme,
 } from "antd";
 import { type MenuType } from "@/app/types/menu";
-import { createElement, useEffect, useState } from "react";
+import { createElement, Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageContext } from "@/app/context/page-context";
 import { getSession, signOut } from "next-auth/react";
@@ -28,6 +29,8 @@ import zhCN from "antd/es/locale/zh_CN";
 import LanguageChanger from "@/app/components/language-changer";
 import { type MenuItemType } from "antd/es/menu/hooks/useItems";
 import { useTranslation } from "react-i18next";
+import ThemeChanger from "@/app/components/theme-changer";
+import { useTheme } from "next-themes";
 
 const Icons: Record<string, any> = Icon;
 
@@ -44,7 +47,7 @@ const setIcon = (menuList: Array<MenuType>): MenuType[] => {
 const { Header, Sider, Content } = Layout;
 
 export default function RootLayout({ children, params: { locale } }) {
-  console.log("RootLayout", locale);
+  const { theme: currentTheme, setTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -139,12 +142,15 @@ export default function RootLayout({ children, params: { locale } }) {
     getUser()
       .then(() => menuApi.mutate())
       .catch((e) => console.log(e));
+    setTheme(currentTheme);
   }, []);
 
   const items: MenuProps["items"] = [
     {
       label: (
-        <span onClick={() => signOut({ callbackUrl: "/login" })}>退出登录</span>
+        <span onClick={() => signOut({ callbackUrl: "/login" })}>
+          {t("sign out")}
+        </span>
       ),
       key: "0",
     },
@@ -153,13 +159,21 @@ export default function RootLayout({ children, params: { locale } }) {
   return (
     <Layout className="h-screen w-screen">
       {contextHolder}
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="h-16 w-full text-cyan-50"></div>
+      <Sider
+        className="border-r-[1px] border-r-gray-100 dark:border-gray-900"
+        style={{ background: colorBgContainer }}
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+      >
+        <div className="h-16 w-full"></div>
         {selMenu && (
           <Menu
+            style={{
+              border: 0,
+            }}
             defaultOpenKeys={[selMenu.parent?.key || selMenu.key]}
             onClick={changeMenu}
-            theme="dark"
             mode="inline"
             selectedKeys={[selMenu.key]}
             items={menuList as MenuItemType[]}
@@ -188,6 +202,7 @@ export default function RootLayout({ children, params: { locale } }) {
             </div>
           </div>
           <div className="flex items-center">
+            <ThemeChanger />
             <LanguageChanger />
             <Dropdown menu={{ items }} className="mr-5">
               <a onClick={(e) => e.preventDefault()}>
@@ -206,6 +221,7 @@ export default function RootLayout({ children, params: { locale } }) {
             minHeight: 280,
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
+            overflowY: "auto",
           }}
         >
           <ConfigProvider locale={zhCN}>

@@ -4,6 +4,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
+import { type Prisma } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
   register: publicProcedure
@@ -17,7 +18,7 @@ export const userRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       return ctx.db.user.create({
-        data: input,
+        data: input as Prisma.UserCreateInput,
       });
     }),
   login: publicProcedure
@@ -59,7 +60,7 @@ export const userRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       return ctx.db.user.delete({
-        where: input,
+        where: input as Prisma.UserWhereUniqueInput ,
       });
     }),
 

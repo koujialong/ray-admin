@@ -27,7 +27,7 @@ const onError = ({
   path: string | undefined;
   req: any;
   input: unknown;
-  ctx: inferRouterContext<any> | undefined;
+  // ctx: inferRouterContext<any> | undefined;
 }) => {
   if (env.NODE_ENV === "development") {
     console.error(`❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`);

@@ -1,28 +1,34 @@
 import { api } from "@/trpc/react";
-import React, { useContext, useImperativeHandle, useRef, useState } from "react";
-import { Form, Input, InputNumber, Modal, Radio } from "antd";
+import React, {
+  type Ref,
+  useContext,
+  useImperativeHandle,
+  useState,
+} from "react";
+import { Form, FormInstance, Input, InputNumber, Modal, Radio } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { PageContext } from "@/app/context/page-context";
 import { STATUS } from "@/app/[locale]/constant";
 import TextArea from "antd/es/input/TextArea";
 import MenuTree from "@/app/[locale]/(pages)/main/system/role/components/MenuTree";
+import { Role } from "@prisma/client";
 
-type ViewType = "edit" | "view" | "add"
+type ViewType = "edit" | "view" | "add";
 
 export interface RoleModalRefType {
-  setModel(open: Boolean, type: ViewType, id?: string): void;
+  setModel(open: boolean, type: ViewType, id?: string): void;
 }
 
 export interface RoleModalType {
   reloadList: () => void;
 }
 
-export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) => {
+function Index(params: RoleModalType, ref: Ref<RoleModalRefType>) {
   const [open, setOpen] = useState(false);
   const [viewType, setViewType] = useState<ViewType>("add");
   const [id, setId] = useState<string>();
   const [selMenus, setSelMenus] = useState<string[]>([]);
-  const form = Form.useForm()[0];
+  const form = Form.useForm<Role>()[0];
 
   const setModel = (open: boolean, type: ViewType, id?: string) => {
     setOpen(open);
@@ -34,7 +40,7 @@ export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) =
         remark: "",
         roleName: "",
         roleKey: "",
-        order: 1
+        order: 1,
       });
       setSelMenus([]);
       if (id && ["view", "edit"].includes(type)) {
@@ -47,15 +53,15 @@ export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) =
   useImperativeHandle(
     ref,
     () => ({
-      setModel
+      setModel,
     }),
-    []
+    [],
   );
 
   const findRole = api.role.findRoleById.useMutation({
     onSuccess(menu) {
       form.setFieldsValue(menu);
-    }
+    },
   });
 
   const roleUpdateApi = api.role.upDateRoleById.useMutation({
@@ -64,12 +70,12 @@ export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) =
         await messageApi.open({
           type: "success",
           content: "修改角色成功",
-          duration: 0.3
+          duration: 0.3,
         });
         setOpen(false);
         params.reloadList();
       }
-    }
+    },
   });
 
   const { messageApi } = useContext(PageContext);
@@ -78,30 +84,29 @@ export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) =
       if (data.id) {
         addRuleMenuApi.mutate({
           roleId: data.roleKey,
-          menuIds: selMenus
+          menuIds: selMenus,
         });
         await messageApi.open({
           type: "success",
           content: "新增角色成功",
-          duration: 0.3
+          duration: 0.3,
         });
         setOpen(false);
         params.reloadList();
       }
-    }
+    },
   });
 
   const getRuleMenuApi = api.role.getRuleMenu.useMutation({
     onSuccess(data) {
-      setSelMenus(data.map(it => it.menuId));
-    }
+      setSelMenus(data.map((it) => it.menuId));
+    },
   });
-
 
   const addRuleMenuApi = api.role.addRuleMenu.useMutation({
     onSuccess() {
-
-    }
+      console.log('')
+    },
   });
 
   const submit = async () => {
@@ -110,20 +115,24 @@ export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) =
     if (viewType === "edit" && id) {
       roleUpdateApi.mutate({
         ...role,
-        id
+        id,
       });
       addRuleMenuApi.mutate({
         roleId: role.roleKey,
-        menuIds: selMenus
+        menuIds: selMenus,
       });
       return;
     }
     addMenuApi.mutate(role);
   };
   return (
-    <Modal title="角色" open={open} onOk={submit} onCancel={() => setOpen(false)}
-           okButtonProps={{ style: { display: viewType === "view" ? "none" : "" } }}
-           okText={viewType === "edit" ? "修改" : "添加"}
+    <Modal
+      title="角色"
+      open={open}
+      onOk={submit}
+      onCancel={() => setOpen(false)}
+      okButtonProps={{ style: { display: viewType === "view" ? "none" : "" } }}
+      okText={viewType === "edit" ? "修改" : "添加"}
     >
       <Form
         form={form}
@@ -153,23 +162,23 @@ export default React.forwardRef<RoleModalRefType, RoleModalType>((params, ref) =
         >
           <InputNumber min="0" placeholder="排序"></InputNumber>
         </FormItem>
-        <FormItem name="status"
-                  label="状态">
+        <FormItem name="status" label="状态">
           <Radio.Group>
-            {Object.keys(STATUS).map(key =>
-              <Radio value={key} key={key}>{STATUS[key]}</Radio>)}
+            {Object.keys(STATUS).map((key) => (
+              <Radio value={key} key={key}>
+                {STATUS[key]}
+              </Radio>
+            ))}
           </Radio.Group>
         </FormItem>
         <FormItem label="菜单权限">
           <MenuTree selMenus={selMenus} setSelMenus={setSelMenus} />
         </FormItem>
-        <FormItem
-          name="remark"
-          label="备注"
-        >
+        <FormItem name="remark" label="备注">
           <TextArea placeholder="备注"></TextArea>
         </FormItem>
       </Form>
     </Modal>
   );
-});
+}
+export default React.forwardRef<RoleModalRefType, RoleModalType>(Index);

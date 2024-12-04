@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { Card, Divider } from "antd";
 import CodeMirror from "@uiw/react-codemirror";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { sql } from "@codemirror/lang-sql";
 
-export default function() {
-  const [sqlStr, setSqlStr] = React.useState("SELECT * FROM USER");
-  const customAutoCompletions = (context: any) => {
-    let word = context.matchBefore(/\w*/);
+function SqlEditor() {
+  const [sqlStr, setSqlStr] = useState("SELECT * FROM USER");
+  const customAutoCompletions = (context:any) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const word = context.matchBefore(/\w*/);
     if (word.from == word.to && !context.explicit)
       return null;
     return {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       from: word.from,
       options: [
         { label: "match", type: "keyword" },
@@ -22,7 +24,7 @@ export default function() {
     };
   };
 
-  const onChangeSql = React.useCallback((val: any, viewUpdate: any) => {
+  const onChangeSql = useCallback((val: string) => {
     setSqlStr(val);
   }, []);
   return <div className="w-full h-full">
@@ -40,3 +42,4 @@ export default function() {
     </Card>
   </div>;
 }
+export default SqlEditor

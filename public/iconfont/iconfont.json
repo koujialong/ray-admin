@@ -1,0 +1,30 @@
+{
+  "id": "4764806",
+  "name": "next-admin",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "next admin",
+  "glyphs": [
+    {
+      "icon_id": "9097246",
+      "name": "阅读页-夜间模式",
+      "font_class": "yueduye-yejianmoshi",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "9101775",
+      "name": "日间模式xhdpi",
+      "font_class": "rijianmoshixhdpi",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "34198325",
+      "name": "中文显示",
+      "font_class": "zhongwenxianshi",
+      "unicode": "e853",
+      "unicode_decimal": 59475
+    }
+  ]
+}

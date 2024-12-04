@@ -4,8 +4,9 @@ import { Button, Popconfirm, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { api } from "@/trpc/react";
 import { STATUS } from "@/app/[locale]/constant";
-import RuleModal, { RoleModalRefType } from "@/app/[locale]/(pages)/main/system/role/components/RoleModal";
-
+import RuleModal, {
+  type RoleModalRefType,
+} from "@/app/[locale]/(pages)/main/system/role/components/RoleModal";
 
 export interface RoleType {
   id: string;
@@ -15,27 +16,28 @@ export interface RoleType {
 
 const pageSize = 10;
 
-
 const RoleList: React.FC = () => {
-  const [roles, setRoles] = useState<any>({ list: [] });
+  const [roles, setRoles] = useState<{ list: RoleType[]; total?: number }>({
+    list: [],
+  });
   const [pageNum, setPageNum] = useState(1);
   const ruleModalRef = useRef<RoleModalRefType>(null);
   const roleController = api.role.getRoleList.useMutation({
     onSuccess(data) {
       setRoles(data);
-    }
+    },
   });
   useEffect(() => {
     roleController.mutate({
       pageNum,
-      pageSize
+      pageSize,
     });
   }, []);
 
   const roleDeleteApi = api.role.deleteRoleById.useMutation({
     onSuccess() {
       roleController.mutate({ pageNum, pageSize });
-    }
+    },
   });
   const deleteRole = (id: string) => {
     roleDeleteApi.mutate({ id });
@@ -49,22 +51,24 @@ const RoleList: React.FC = () => {
       render: (text, record) => (
         <Button
           type="link"
-          onClick={() => ruleModalRef.current?.setModel(true, "view", record.roleKey)}
+          onClick={() =>
+            ruleModalRef.current?.setModel(true, "view", record.roleKey)
+          }
         >
           {text}
         </Button>
-      )
+      ),
     },
     {
       title: "角色Key",
       dataIndex: "roleKey",
-      key: "roleKey"
+      key: "roleKey",
     },
     {
       title: "状态",
       dataIndex: "status",
       key: "status",
-      render: (status) => STATUS[status]
+      render: (status) => STATUS[status],
     },
     {
       title: "备注",
@@ -74,7 +78,7 @@ const RoleList: React.FC = () => {
     {
       title: "排序",
       dataIndex: "order",
-      key: "order"
+      key: "order",
     },
     {
       title: "操作",
@@ -99,24 +103,24 @@ const RoleList: React.FC = () => {
             编辑
           </Button>
         </Space>
-      )
-    }
+      ),
+    },
   ];
 
   const changePage = (page: number, pageSize: number) => {
     setPageNum(page);
     roleController.mutate({
       pageNum: page,
-      pageSize
+      pageSize,
     });
   };
 
-  const reloadList=()=>{
+  const reloadList = () => {
     roleController.mutate({
       pageNum,
-      pageSize
+      pageSize,
     });
-  }
+  };
 
   return (
     <>
@@ -135,7 +139,7 @@ const RoleList: React.FC = () => {
         rowKey="id"
         pagination={{ total: roles.total, pageSize, onChange: changePage }}
       />
-      <RuleModal ref={ruleModalRef} reloadList={reloadList}/>
+      <RuleModal ref={ruleModalRef} reloadList={reloadList} />
     </>
   );
 };

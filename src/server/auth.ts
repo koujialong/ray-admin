@@ -2,7 +2,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import {
   getServerSession,
   type DefaultSession,
-  type NextAuthOptions
+  type NextAuthOptions,
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -14,7 +14,6 @@ interface IUser {
   email?: string | null;
   id?: string;
   image?: string;
-  role: string;
 }
 
 declare module "next-auth" {
@@ -23,20 +22,22 @@ declare module "next-auth" {
   }
 
   interface User extends IUser {
+    role: string;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT extends IUser {
+    role: string;
   }
 }
 
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: ({ session, token, user }) => {
-      if (token){
-        session.user.role=token.role
-        session.user.id=token.id as string
+      if (token) {
+        session.user.role = token.role;
+        session.user.id = token.id;
       }
       return session;
     },
@@ -46,19 +47,19 @@ export const authOptions: NextAuthOptions = {
       // }
       if (user) {
         token.role = user.role;
-        token.id=token.sub
+        token.id = token.sub;
       }
       return token;
-    }
+    },
   },
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
   },
   pages: {
-    signIn: "/login"
+    signIn: "/login",
   },
   jwt: {
-    maxAge: 60 * 60 * 12
+    maxAge: 60 * 60 * 12,
   },
   debug: process.env.NODE_ENV === "development",
   adapter: PrismaAdapter(db),
@@ -67,7 +68,7 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         name: { label: "name", type: "text" },
-        password: { label: "password", type: "password" }
+        password: { label: "password", type: "password" },
       },
       async authorize(credentials, req): Promise<any> {
         if (typeof credentials !== "undefined") {
@@ -81,9 +82,9 @@ export const authOptions: NextAuthOptions = {
         } else {
           return null;
         }
-      }
-    })
-  ]
+      },
+    }),
+  ],
 };
 
 export const getServerAuthSession = () => getServerSession(authOptions);

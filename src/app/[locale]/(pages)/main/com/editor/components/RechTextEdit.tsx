@@ -5,7 +5,7 @@ import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import { Editor, Toolbar } from '@wangeditor/editor-for-react'
 import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor'
 
-export default function() {
+function RichTextEditor() {
   // editor 实例
   const [editor, setEditor] = useState<IDomEditor | null>(null)   // TS 语法
   // const [editor, setEditor] = useState(null)                   // JS 语法
@@ -62,3 +62,4 @@ export default function() {
     </Card>
   );
 }
+export default RichTextEditor

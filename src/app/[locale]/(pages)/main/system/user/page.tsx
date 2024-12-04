@@ -4,6 +4,7 @@ import { Button, Popconfirm, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
+import { type User } from "@prisma/client";
 
 interface DataType {
   id: string;
@@ -16,7 +17,10 @@ const pageSize = 10;
 
 const UserList: React.FC = () => {
   const router = useRouter();
-  const [users, setUsers] = useState<any>({ list: [] });
+  const [users, setUsers] = useState<{
+    list: User[];
+    total?: number;
+  }>({ list: [] });
   const [pageNum, setPageNum] = useState(1);
   // getUserList
   const userController = api.user.getUserList.useMutation({
@@ -80,7 +84,9 @@ const UserList: React.FC = () => {
           </Popconfirm>
           <Button
             type="link"
-            onClick={() => router.push(`/main/system/user/edit?id=${record.id}`)}
+            onClick={() =>
+              router.push(`/main/system/user/edit?id=${record.id}`)
+            }
           >
             编辑
           </Button>
@@ -100,7 +106,10 @@ const UserList: React.FC = () => {
   return (
     <div>
       <Space className="mb-4">
-        <Button type="primary" onClick={() => router.push(`/main/system/user/add`)}>
+        <Button
+          type="primary"
+          onClick={() => router.push(`/main/system/user/add`)}
+        >
           新增用户
         </Button>
       </Space>

@@ -1,10 +1,12 @@
 // const path = require("path");
 
-const i18nConfig = {
+import { type Config } from "next-i18n-router/dist/types";
+
+const i18nConfig:Config = {
   locales: ["cn", "en"],
   defaultLocale: "cn",
-  localeDetection: false,
-  prefixDefault: "",
+  localeDetector: false,
+  prefixDefault: false,
   // localePath: path.resolve("./public/locales"),
 };
 

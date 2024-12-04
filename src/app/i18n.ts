@@ -1,16 +1,13 @@
-import { createInstance,i18n } from "i18next";
+import { createInstance, type i18n, type Resource } from "i18next";
 import { initReactI18next } from "react-i18next/initReactI18next";
 import resourcesToBackend from "i18next-resources-to-backend";
 import i18nConfig from "../../i18nConfig";
-
-// 定义 Resources 类型
-type Resources = Record<string, Record<string, Record<string, any>>>;
 
 export default async function initTranslations(
   locale: string,
   namespaces: string[],
   i18nInstance?: i18n,
-  resources?: Resources,
+  resources?: Resource,
 ) {
   i18nInstance = i18nInstance || createInstance();
 
@@ -25,7 +22,7 @@ export default async function initTranslations(
     );
   }
 
-  console.log('resources',resources)
+  console.log("resources", resources);
 
   await i18nInstance.init({
     lng: locale,

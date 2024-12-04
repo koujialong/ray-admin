@@ -1,7 +1,7 @@
 import { Button, Result } from "antd";
 import Link from "next/link";
 
-export default function () {
+export default function Index() {
   return (
     <div className="flex h-screen w-screen items-center justify-center">
       <Result

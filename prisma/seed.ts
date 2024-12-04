@@ -8,7 +8,8 @@ async function main() {
       email: "admin@123.com",
       username: "admin",
       image: null,
-      password: "admin"
+      password: "admin",
+      role:'admin'
     }
   ];
   await Promise.all(

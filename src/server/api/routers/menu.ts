@@ -1,12 +1,12 @@
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "@/server/api/trpc";
-import { getSession } from "next-auth/react";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { getServerAuthSession } from "@/server/auth";
-import { MenuType } from "@/app/types/menu";
+import { type MenuType } from "@/app/types/menu";
+import { type Menu, type Prisma } from "@prisma/client";
+
+interface MenuItem extends Menu {
+  parentMenu?: Menu; // 新增的 parentMenu 字段
+}
 
 export const menuRouter = createTRPCRouter({
   addMenu: protectedProcedure
@@ -23,7 +23,7 @@ export const menuRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.create({
-        data: input,
+        data: input as Prisma.MenuCreateInput,
       });
     }),
   getMenuList: protectedProcedure
@@ -34,11 +34,11 @@ export const menuRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      let list: any[] = await ctx.db.menu.findMany({
+      const list: MenuItem[] = await ctx.db.menu.findMany({
         skip: input.pageSize * (input.pageNum - 1),
         take: input.pageSize,
       });
-      let allList = await ctx.db.menu.findMany();
+      const allList = await ctx.db.menu.findMany();
       const total = await ctx.db.user.count();
       for (const menu of list) {
         if (menu.parent) {
@@ -80,7 +80,7 @@ export const menuRouter = createTRPCRouter({
       });
       const session = await getServerAuthSession();
       const { user } = session || {};
-      let map: { [key: string]: any } = {};
+      const map: Record<string, any> = {};
       const menus = await ctx.db.roleMenu.findMany({
         where: {
           roleId: user?.role,
@@ -91,7 +91,7 @@ export const menuRouter = createTRPCRouter({
       });
       const menuKeys = menus.map((menu) => menu.menuId);
       list.forEach((row) => {
-        const transMenu: any = {
+        const transMenu: Partial<Menu> = {
           ...row,
         };
         if (input.isSetting) {
@@ -105,7 +105,9 @@ export const menuRouter = createTRPCRouter({
       });
       list.forEach((row) => {
         if (row.parent && map[row.parent]) {
-          const parent = map[row.parent];
+          const parent = map[row.parent] as Partial<Menu> & {
+            children: Partial<Menu>[];
+          };
           // parent.isLeaf = false;
           const transRow: any = {
             ...row,
@@ -124,7 +126,7 @@ export const menuRouter = createTRPCRouter({
       const tree: MenuType[] = [];
       Object.keys(map).forEach((key) => {
         if (!map[key].parent) {
-          tree.push(map[key]);
+          tree.push(map[key] as MenuType);
         }
       });
       return {
@@ -139,17 +141,17 @@ export const menuRouter = createTRPCRouter({
         order: "asc",
       },
     });
-    const tree: any[] = [];
-    let map: { [key: string]: any } = {};
+    const tree: MenuType[] = [];
+    const map: Record<string, any> = {};
     list.forEach((row) => {
-      const transMenu: any = {
+      const transMenu: Partial<Menu> = {
         ...row,
       };
       map[row.id] = transMenu;
     });
     list.forEach((row) => {
       if (row.parent && map[row.parent]) {
-        const parent = map[row.parent];
+        const parent = map[row.parent] as MenuType;
         // parent.isLeaf = false;
         const transRow: any = {
           ...row,
@@ -164,7 +166,7 @@ export const menuRouter = createTRPCRouter({
     });
     Object.keys(map).forEach((key) => {
       if (!map[key].parent) {
-        tree.push(map[key]);
+        tree.push(map[key] as MenuType);
       }
     });
     console.log("res=====>", tree, list);
@@ -192,7 +194,7 @@ export const menuRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.delete({
-        where: input,
+        where: input as Prisma.MenuWhereUniqueInput,
       });
     }),
 

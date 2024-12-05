@@ -22,8 +22,6 @@ export default async function initTranslations(
     );
   }
 
-  console.log("resources", resources);
-
   await i18nInstance.init({
     lng: locale,
     resources,

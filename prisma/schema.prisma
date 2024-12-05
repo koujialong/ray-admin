@@ -3,24 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id          Int      @id @default(autoincrement())
-  name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdById String
-  createdBy   User     @relation(fields: [createdById], references: [id])
-
-  @@index([name])
-  @@index([createdById], map: "Post_createdById_fkey")
-}
-
 model Account {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
   userId            String
   type              String
   provider          String
@@ -32,71 +20,70 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Account_userId_relation")
 
   @@unique([provider, providerAccountId])
   @@index([userId], map: "Account_userId_fkey")
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
+  id           String    @id @default(cuid())
+  sessionToken String    @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Session_userId_relation")
 
   @@index([userId], map: "Session_userId_fkey")
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   username      String
   password      String
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   role          String
   accounts      Account[]
-  posts         Post[]
   sessions      Session[]
 }
 
 model Menu {
-  id       String  @default(cuid())
+  id       String   @default(cuid())
   label    String
-  key      String  @id @unique
+  key      String   @id @unique
   icon     String
   parent   String?
   order    Int
   menuType String
-  status   String  @db.Char(1)
+  status   String   @db.Char(1)
 }
 
 model VerificationToken {
   identifier String
-  token      String   @unique
+  token      String    @unique
   expires    DateTime
 
   @@unique([identifier, token])
 }
 
 model Role {
-  id       String  @id @default(cuid())
+  id       String   @id @default(cuid())
   remark   String?
   roleName String
-  roleKey  String  @unique(map: "Rule_roleKey_key")
+  roleKey  String   @unique(map: "Rule_roleKey_key")
   order    Int
-  status   String  @db.Char(1)
+  status   String   @db.Char(1)
 }
 
 model UserRole {
-  id     String @id @default(cuid())
+  id     String  @id @default(cuid())
   userId String
   roleId String
 }
 
 model RoleMenu {
-  id     String @id @default(cuid())
+  id     String  @id @default(cuid())
   roleId String
   menuId String
 }

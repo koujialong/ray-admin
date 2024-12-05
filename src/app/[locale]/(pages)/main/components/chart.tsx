@@ -210,12 +210,6 @@ function Chart({ options }: { options: ChartOptions }) {
                 background
                 dataKey="uv"
               />
-              <Legend
-                iconSize={10}
-                layout="vertical"
-                verticalAlign="middle"
-                wrapperStyle={style}
-              />
             </>
           )}
         </ChartComponent>

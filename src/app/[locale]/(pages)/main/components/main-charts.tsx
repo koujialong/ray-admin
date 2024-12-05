@@ -8,7 +8,7 @@ function MainCharts() {
   const [chartType, setType] = useState<ChartType>("bar");
   return (
     <>
-      <div className="h-full w-full rounded-md p-4 shadow-lg">
+      <div className="h-full w-full p-4 shadow-lg">
         <div className="h-full pb-4">
           <Segmented
             value={chartType}

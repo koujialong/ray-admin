@@ -1,17 +1,20 @@
 "use client";
-import { Button, Card, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-
+interface LoginFormValues {
+  username: string;
+  password: string;
+}
 export default function Login() {
   const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
-  const login = async (values) => {
+  const form = Form.useForm<LoginFormValues>()[0];
+  const login = async (values: LoginFormValues) => {
     const { username, password } = values;
     setLoading(true);
     const auth = await signIn("credentials", {
@@ -41,7 +44,7 @@ export default function Login() {
             <h2 className="mb-4 text-center text-2xl font-semibold text-white">
               NEXT
             </h2>
-            <Form onFinish={login}>
+            <Form onFinish={login} form={form}>
               <FormItem
                 name="username"
                 rules={[

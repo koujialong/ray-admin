@@ -23,7 +23,7 @@ function HomeCard({ info }: { info: Card }) {
     }
   }
   return (
-    <div className="flex h-full w-1/4 rounded-md bg-blue-50 p-4 text-slate-600 shadow-lg dark:bg-black dark:text-white">
+    <div className="flex h-full w-1/4 rounded-md bg-blue-50 p-4 text-slate-600 shadow-lg dark:bg-transparent dark:text-white dark:border dark:border-gray-700">
       <div className="w-28">
         <div className="text-xl ">{info.name}</div>
         <div className="text-bas mt-2">{info.desc}</div>

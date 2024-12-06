@@ -3,7 +3,7 @@ export const users: Prisma.UserCreateInput[] = [
   {
     id: "clrhmuys30000qn1cq1whkroz",
     username: "admin",
-    password: "admin",
+    password: "admin@123",
     email: "admin@123.com",
     emailVerified: null,
     image: null,

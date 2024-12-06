@@ -1,5 +1,5 @@
 "use client";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,7 @@ export default function Login() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const form = Form.useForm<LoginFormValues>()[0];
+  const [messageApi, contextHolder] = message.useMessage();
   const login = async (values: LoginFormValues) => {
     const { username, password } = values;
     setLoading(true);
@@ -26,7 +27,10 @@ export default function Login() {
     if (auth?.ok) {
       location.href = "/main";
     } else {
-      alert(`${t("username")}/${t("password")} ${t("error")}`);
+      messageApi.open({
+        type: "error",
+        content: `${t("username")}/${t("password")} ${t("error")}`,
+      });
     }
   };
 
@@ -38,6 +42,7 @@ export default function Login() {
           "url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80)",
       }}
     >
+      {contextHolder}
       <div className="w-[1000px] py-16">
         <div className="mx-auto flex max-w-sm overflow-hidden rounded-lg bg-white bg-opacity-10 shadow-lg backdrop-blur-lg backdrop-filter">
           <div className="w-full p-8 dark:bg-opacity-30">

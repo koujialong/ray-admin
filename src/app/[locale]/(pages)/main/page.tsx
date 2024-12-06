@@ -3,6 +3,7 @@ import HomeCard from "./components/home-card";
 import MainCharts from "./components/main-charts";
 import { cardList, chartList } from "./conts";
 import Chart from "./components/chart";
+import MessageCard from "./components/messge-card";
 export default async function DashBoard({ params: { locale } }) {
   const { t } = await initTranslations(locale as string, ["common"]);
   return (
@@ -12,8 +13,13 @@ export default async function DashBoard({ params: { locale } }) {
           <HomeCard key={card.name} info={card} />
         ))}
       </div>
-      <div className="mt-4 h-2/5 w-full rounded-md dark:border dark:border-gray-700">
-        <MainCharts />
+      <div className="mt-4 flex h-2/5 w-full gap-2">
+        <div className="h-full w-2/3 rounded-md dark:border dark:border-gray-700">
+          <MainCharts />
+        </div>
+        <div className="h-full w-1/3 rounded-md shadow-lg dark:border dark:border-gray-700">
+          <MessageCard />
+        </div>
       </div>
       <div className="mt-4 flex h-2/5 w-full gap-2">
         {chartList.map((chartType) => (

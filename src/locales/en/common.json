@@ -9,5 +9,8 @@
   "password": "password",
   "email": "email",
   "please input": "place input",
-  "error": "error"
+  "error": "error",
+  "Light": "Light",
+  "Dark": "Dark",
+  "System": "System"
 }

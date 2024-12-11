@@ -1,10 +1,11 @@
 "use client";
-import { Button, Card, Form, Input } from "antd";
-import FormItem from "antd/es/form/FormItem";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { User } from "@prisma/client";
+import { ConfigForm } from "@/components/form/config-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 
 export default function Register() {
   const { t } = useTranslation();
@@ -15,7 +16,7 @@ export default function Register() {
   });
   const router = useRouter();
   const register = async (val) => {
-    regist.mutate(val as User);
+    regist.mutate({ ...val, role: 'common' } as User);
   };
 
   return (
@@ -32,46 +33,41 @@ export default function Register() {
             <h2 className="mb-4 text-center text-2xl font-semibold text-white">
               {t("register")}
             </h2>
-            <Form onFinish={register}>
-              <FormItem
-                name="username"
-                rules={[
-                  {
-                    required: true,
-                    message: `${t("please input")} ${t("username")}`,
-                  },
-                ]}
-              >
-                <Input placeholder={t("username")} />
-              </FormItem>
-              <FormItem
-                name="email"
-                rules={[
-                  {
-                    required: true,
-                    message: `${t("please input")} ${t("email")}`,
-                  },
-                ]}
-              >
-                <Input type="email" placeholder={t("email")} />
-              </FormItem>
-              <FormItem
-                name="password"
-                rules={[
-                  {
-                    required: true,
-                    message: `${t("please input")} ${t("password")}`,
-                  },
-                ]}
-              >
-                <Input type="password" placeholder={t("password")} />
-              </FormItem>
-              <Form.Item>
-                <Button type="primary" htmlType="submit" className="w-full">
+            <ConfigForm
+              className="w-full"
+              formItems={[
+                {
+                  key: "username",
+                  type: "Input",
+                  placeholder: `${t("please input")} ${t("username")}`,
+                  rule: z
+                    .string()
+                    .min(1, `${t("please input")} ${t("username")}`),
+                },
+                {
+                  key: "email",
+                  type: "Input",
+                  inputType: "email",
+                  placeholder: `${t("please input")} ${t("email")}`,
+                  rule: z.string().email(`${t("please input")} ${t("email")}`),
+                },
+                {
+                  key: "password",
+                  type: "Input",
+                  inputType: "password",
+                  placeholder: `${t("please input")} ${t("password")}`,
+                  rule: z
+                    .string()
+                    .min(1, `${t("please input")} ${t("password")}`),
+                },
+              ]}
+              onSubmit={register}
+              footer={
+                <Button type="submit" className="w-full">
                   {t("register")}
                 </Button>
-              </Form.Item>
-            </Form>
+              }
+            />
             <div className="mt-4 flex items-center justify-between">
               <span className="w-1/5 border-b md:w-1/4"></span>
               <a

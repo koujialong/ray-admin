@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo } from "react";
+import { ReactNode, useEffect, useMemo } from "react";
 import { PageContext } from "@/app/context/page-context";
 import { getSession } from "next-auth/react";
 import { userAtom } from "@/app/store/user";
@@ -13,8 +13,20 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import React from "react";
 import { reload } from "@/app/actions";
 import KBar from "@/components/kbar";
+import { MenuType } from "@/app/types/menu";
 
-export default function Main({ children, params: { locale, menuData } }) {
+export default function Main({
+  children,
+  params: { menuData },
+}: {
+  children: ReactNode;
+  params: {
+    menuData: {
+      list: MenuType[];
+      tree: MenuType[];
+    };
+  };
+}) {
   const [_, setUser] = useAtom(userAtom);
   const { t } = useTranslation("menu");
   const { theme: currentTheme, setTheme } = useTheme();

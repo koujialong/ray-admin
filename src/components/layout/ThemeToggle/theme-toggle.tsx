@@ -10,8 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTranslation } from "react-i18next";
-type CompProps = {};
-export default function ThemeToggle({}: CompProps) {
+export default function ThemeToggle() {
   const { setTheme } = useTheme();
   const { t } = useTranslation();
   return (

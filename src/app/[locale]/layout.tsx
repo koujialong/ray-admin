@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 
-import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
 import { TRPCReactProvider } from "@/trpc/react";
@@ -11,10 +10,6 @@ import Loading from "./loading";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
 const i18nNamespaces = ["common", "menu"];
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
 
 export const metadata = {
   title: "Create T3 App",
@@ -29,7 +24,7 @@ export default async function RootLayout({ children, params }) {
   );
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable} overflow-hidden`}>
+      <body className={`font-sans overflow-hidden`}>
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider
             attribute="class"

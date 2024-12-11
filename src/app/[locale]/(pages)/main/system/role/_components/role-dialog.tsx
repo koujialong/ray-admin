@@ -10,7 +10,7 @@ import { STATUS } from "@/app/[locale]/constant";
 import { FormDialog, FromDialogRef } from "@/components/form-dialog";
 import { z } from "zod";
 import { MenuType } from "@/app/types/menu";
-import { TreeDataItem } from "@/components/tree-view";
+import { IconComponent, TreeDataItem } from "@/components/tree-view";
 import { useToast } from "@/hooks/use-toast";
 import { Role } from "@prisma/client";
 
@@ -41,7 +41,7 @@ function Index(params: RoleModalType, ref: Ref<RoleModalRefType>) {
         return tree.map((item) => ({
           id: item.key,
           name: item.label,
-          icon: item.icon,
+          icon: item.icon as unknown as IconComponent,
           children: item.children?.length ? transTree(item.children) : null,
         }));
       }

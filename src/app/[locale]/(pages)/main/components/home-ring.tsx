@@ -51,17 +51,17 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function HomeRing({ className }) {
+export function HomeRing({ className }: { className: string }) {
   return (
     <Card className={`${className} flex flex-col`}>
       <CardHeader className="items-center pb-0">
         <CardTitle>Radial Chart - Label</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0 items-center">
+      <CardContent className="flex-1 items-center pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto max-h-[300px] flex items-center pt-10"
+          className="mx-auto flex max-h-[300px] items-center pt-10"
         >
           <RadialBarChart
             data={chartData}

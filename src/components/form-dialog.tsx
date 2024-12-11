@@ -44,7 +44,7 @@ interface FromDialogProps extends DialogProps {
   onSubmit: (formData) => void;
 }
 
-export interface FromDialogRef {
+export interface FromDialogRef<> {
   setFormData: (data: { [x: string]: any }) => void;
 }
 
@@ -66,7 +66,7 @@ function Index(
     onOpenChange(false);
   }
 
-  const onOpenChange = (open) => {
+  const onOpenChange = (open: boolean) => {
     setOpen(open);
     configFormRef.current.form?.reset();
     configFormRef.current.form?.clearErrors();

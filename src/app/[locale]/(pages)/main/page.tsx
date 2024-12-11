@@ -1,8 +1,7 @@
 import initTranslations from "../../../i18n";
 import HomeCard from "./components/home-card";
 import { MainChart } from "./components/home-charts";
-import { cardList, chartList } from "./conts";
-import Chart from "./components/chart";
+import { cardList } from "./conts";
 import PageContainer from "@/components/layout/page-container";
 import { CardContainer } from "@/components/card-container";
 import { RecentSales } from "./components/recent-sales";

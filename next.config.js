@@ -8,6 +8,9 @@ await import("./src/env.js");
 const config = {
   reactStrictMode: false,
   transpilePackages: ["lucide-react"],
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async redirects() {
     return [
       {

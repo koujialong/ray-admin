@@ -1,7 +1,7 @@
 export interface MenuType {
   label?: string;
   key?: string;
-  icon?: any;
+  icon?: string;
   order?: number;
   parent?: Menu;
   menuType?: string;

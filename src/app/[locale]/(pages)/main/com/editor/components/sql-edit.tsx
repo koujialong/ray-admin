@@ -3,10 +3,16 @@ import CodeMirror from "@uiw/react-codemirror";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { sql } from "@codemirror/lang-sql";
 import { CardContainer } from "@/components/card-container";
-
+interface completeContext {
+  matchBefore: (reg: RegExp) => {
+    from: string;
+    to: string;
+  };
+  explicit: boolean;
+}
 function SqlEditor() {
   const [sqlStr, setSqlStr] = useState("SELECT * FROM USER");
-  const customAutoCompletions = (context: any) => {
+  const customAutoCompletions = (context: completeContext) => {
     const word = context.matchBefore(/\w*/);
     if (word.from == word.to && !context.explicit) return null;
     return {

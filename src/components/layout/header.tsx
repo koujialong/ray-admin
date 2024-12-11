@@ -17,7 +17,7 @@ export default function Header({ menuList }: { menuList: MenuType[] }) {
         <Breadcrumbs menuList={menuList} />
       </div>
 
-      <div className="flex items-center gap-2 px-4">
+      <div className="flex items-center gap-4 px-4">
         <div className="hidden md:flex">
           <SearchInput />
         </div>

@@ -33,7 +33,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function HomeRadar({ className }) {
+export function HomeRadar({
+  className,
+}: {
+  className: string;
+}) {
   return (
     <Card className={`${className} flex flex-col`}>
       <CardHeader className="items-center">

@@ -61,7 +61,10 @@ interface FormItem {
   multiple?: boolean;
   disabled?: boolean;
 }
-function Index({ formItems, onSubmit, ...props }, ref) {
+function Index(
+  { formItems, onSubmit, ...props }: ConfigFormProps,
+  ref
+) {
   useImperativeHandle(
     ref,
     () => ({

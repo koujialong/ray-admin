@@ -9,5 +9,13 @@
   "password": "密码",
   "email": "邮箱",
   "please input": "请输入",
-  "error": "错误"
+  "error": "错误",
+  "Light": "浅色",
+  "Dark": "深色",
+  "Toggle Theme": "切换主题",
+  "Set Light Theme": "设置浅色主题",
+  "Set Dark Theme": "设置深色主题",
+  "Theme": "主题",
+  "Search": "搜索",
+  "System": "跟随系统"
 }

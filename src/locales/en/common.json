@@ -9,5 +9,13 @@
   "password": "password",
   "email": "email",
   "please input": "place input",
-  "error": "error"
+  "error": "error",
+  "Light": "Light",
+  "Dark": "Dark",
+  "Toggle Theme": "Toggle Theme",
+  "Set Light Theme": "Set Light Theme",
+  "Set Dark Theme": "Set Dark Theme",
+  "Theme": "Theme",
+  "Search": "Search",
+  "System": "System"
 }

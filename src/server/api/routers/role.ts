@@ -13,7 +13,7 @@ export const roleRouter = createTRPCRouter({
         status: z.string(),
       }),
     )
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       return ctx.db.role.create({
         data: input as Prisma.RoleCreateInput,
       });
@@ -54,10 +54,12 @@ export const roleRouter = createTRPCRouter({
 
   findRoleById: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(({ ctx, input }) => {
-      return ctx.db.role.findFirst({
+    .mutation(async ({ ctx, input }) => {
+      const res = await ctx.db.role.findFirst({
         where: input,
       });
+      console.log("role======>", res, input);
+      return res;
     }),
 
   upDateRoleById: protectedProcedure
@@ -80,7 +82,7 @@ export const roleRouter = createTRPCRouter({
       });
     }),
 
-  addRuleMenu: protectedProcedure
+  addRoleMenu: protectedProcedure
     .input(
       z.object({
         roleId: z.string(),
@@ -104,7 +106,7 @@ export const roleRouter = createTRPCRouter({
         }),
       );
     }),
-  getRuleMenu: protectedProcedure
+  getRoleMenu: protectedProcedure
     .input(
       z.object({
         roleId: z.string(),

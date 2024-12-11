@@ -1,21 +1,15 @@
 import "@/styles/globals.css";
 
-import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
 import { TRPCReactProvider } from "@/trpc/react";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
 import TranslationsProvider from "../providers/translations-provider";
 import initTranslations from "../i18n";
 import { Suspense } from "react";
 import Loading from "./loading";
 import { ThemeProvider } from "next-themes";
-import AntdProvider from "../providers/antd-provider";
+import { Toaster } from "@/components/ui/toaster";
 const i18nNamespaces = ["common", "menu"];
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
 
 export const metadata = {
   title: "Create T3 App",
@@ -23,27 +17,28 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default async function RootLayout({ children, params: { locale } }) {
+export default async function RootLayout({ children, params }) {
   const { resources } = await initTranslations(
-    locale as string,
+    params.locale as string,
     i18nNamespaces,
   );
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body className={`font-sans overflow-hidden`}>
         <TRPCReactProvider cookies={cookies().toString()}>
-          <ThemeProvider attribute="class" themes={["light", "dark"]} defaultTheme="dark">
-            <AntdRegistry>
-              <AntdProvider>
-                <TranslationsProvider
-                  namespaces={i18nNamespaces}
-                  locale={locale as string}
-                  resources={resources}
-                >
-                  <Suspense fallback={<Loading />}>{children}</Suspense>
-                </TranslationsProvider>
-              </AntdProvider>
-            </AntdRegistry>
+          <ThemeProvider
+            attribute="class"
+            themes={["light", "dark"]}
+            defaultTheme="dark"
+          >
+            <TranslationsProvider
+              namespaces={i18nNamespaces}
+              locale={params.locale as string}
+              resources={resources}
+            >
+              <Toaster />
+              <Suspense fallback={<Loading />}>{children}</Suspense>
+            </TranslationsProvider>
           </ThemeProvider>
         </TRPCReactProvider>
       </body>

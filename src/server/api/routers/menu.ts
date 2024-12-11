@@ -181,7 +181,14 @@ export const menuRouter = createTRPCRouter({
           NOT: {
             id: input,
           },
-          parent: null,
+          OR: [
+            {
+              parent: null,
+            },
+            {
+              parent: "",
+            },
+          ],
         },
       });
     }),

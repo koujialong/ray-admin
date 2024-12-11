@@ -39,7 +39,7 @@
     "**/*.js",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "public"],
+  "exclude": ["node_modules", "public", "src/components/ui"],
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"

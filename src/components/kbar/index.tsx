@@ -8,10 +8,11 @@ import {
   KBarSearch,
 } from "kbar";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useTransition } from "react";
 import RenderResults from "./render-result";
 import useThemeSwitching from "./use-theme-switching";
 import { MenuType } from "@/app/types/menu";
+import { useTranslation } from "react-i18next";
 export interface NavItem {
   title: string;
   url: string;
@@ -32,6 +33,7 @@ export default function KBar({
   children: React.ReactNode;
   navItems: MenuType[];
 }) {
+  const { t } = useTranslation("menu");
   const router = useRouter();
 
   const navigateTo = (url: string) => {
@@ -41,21 +43,23 @@ export default function KBar({
   // These action are for the navigation
   const actions = useMemo(
     () =>
-      navItems.map((navItem) => {
-        const baseAction =
-          navItem.key !== "#"
-            ? {
-                id: `${navItem.label.toLowerCase()}Action`,
-                name: navItem.label,
-                // shortcut: navItem.shortcut,
-                keywords: navItem.label.toLowerCase(),
-                section: "Navigation",
-                subtitle: `Go to ${navItem.label}`,
-                perform: () => navigateTo(navItem.key),
-              }
-            : null;
-        return baseAction;
-      }),
+      navItems
+        .filter((menu) => menu.menuType !== "D")
+        .map((navItem) => {
+          const baseAction =
+            navItem.key !== "#"
+              ? {
+                  id: `${navItem.label.toLowerCase()}Action`,
+                  name: t(navItem.label),
+                  // shortcut: navItem.shortcut,
+                  keywords: navItem.label.toLowerCase(),
+                  section: "Navigation",
+                  subtitle: `Go to ${t(navItem.label)}`,
+                  perform: () => navigateTo(navItem.key),
+                }
+              : null;
+          return baseAction;
+        }),
     [],
   );
 

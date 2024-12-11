@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { ReactElement, ReactNode, useEffect } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ChevronRight } from "lucide-react";
 import { cva } from "class-variance-authority";
@@ -14,13 +14,13 @@ const treeVariants = cva(
 const selectedTreeVariants = cva(
   "before:opacity-100 before:bg-accent/70 text-accent-foreground",
 );
-
+export type IconComponent = React.FC<React.SVGProps<SVGSVGElement>>;
 interface TreeDataItem {
   id: string;
   name: string;
-  icon?: any;
-  selectedIcon?: any;
-  openIcon?: any;
+  icon?: IconComponent;
+  selectedIcon?: IconComponent;
+  openIcon?: IconComponent;
   children?: TreeDataItem[];
   actions?: React.ReactNode;
   onClick?: () => void;
@@ -31,8 +31,8 @@ type TreeProps = React.HTMLAttributes<HTMLDivElement> & {
   initialSelectedItemId?: string[];
   onSelectChange?: (item: string[] | undefined) => void;
   expandAll?: boolean;
-  defaultNodeIcon?: any;
-  defaultLeafIcon?: any;
+  defaultNodeIcon?: IconComponent;
+  defaultLeafIcon?: IconComponent;
   multiple?: boolean;
   disabled?: boolean;
 };
@@ -64,7 +64,7 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeProps>(
 
     const handleSelectChange = React.useCallback(
       (item: TreeDataItem | undefined) => {
-        let selectedItems = [];
+        let selectedItems: string[] = [];
         if (initialSelectedItemId.includes(item?.id)) {
           selectedItems = initialSelectedItemId.filter((id) => id != item.id);
         } else {
@@ -131,8 +131,8 @@ type TreeItemProps = TreeProps & {
   selectedItemId?: string[];
   handleSelectChange: (item: TreeDataItem | undefined) => void;
   expandedItemIds: string[];
-  defaultNodeIcon?: any;
-  defaultLeafIcon?: any;
+  defaultNodeIcon?: IconComponent;
+  defaultLeafIcon?: IconComponent;
 };
 
 const TreeItem = React.forwardRef<HTMLDivElement, TreeItemProps>(
@@ -195,8 +195,8 @@ const TreeNode = ({
   handleSelectChange: (item: TreeDataItem | undefined) => void;
   expandedItemIds: string[];
   selectedItemId?: string[];
-  defaultNodeIcon?: any;
-  defaultLeafIcon?: any;
+  defaultNodeIcon?: IconComponent;
+  defaultLeafIcon?: IconComponent;
 }) => {
   const [value, setValue] = React.useState(
     expandedItemIds.includes(item.id) ? [item.id] : [],
@@ -251,7 +251,7 @@ const TreeLeaf = React.forwardRef<
     item: TreeDataItem;
     selectedItemId?: string[];
     handleSelectChange: (item: TreeDataItem | undefined) => void;
-    defaultLeafIcon?: any;
+    defaultLeafIcon?: IconComponent;
   }
 >(
   (
@@ -331,7 +331,6 @@ const AccordionContent = React.forwardRef<
   </AccordionPrimitive.Content>
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
-
 const TreeIcon = ({
   item,
   isOpen,
@@ -342,10 +341,10 @@ const TreeIcon = ({
   item: TreeDataItem;
   isOpen?: boolean;
   isSelected?: boolean;
-  default?: any;
+  default?: IconComponent;
   handleSelectChange: (item: TreeDataItem | undefined) => void;
 }) => {
-  let Icon = defaultIcon;
+  let Icon: IconComponent = defaultIcon;
   if (isSelected && item.selectedIcon) {
     Icon = item.selectedIcon;
   } else if (isOpen && item.openIcon) {
@@ -356,7 +355,7 @@ const TreeIcon = ({
   return Icon ? (
     <Icon
       className="mr-2 h-4 w-4 shrink-0"
-      onClick={(e) => {
+      onClick={(e: React.MouseEvent) => {
         e.preventDefault();
         handleSelectChange(item);
       }}

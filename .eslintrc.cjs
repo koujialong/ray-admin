@@ -5,7 +5,7 @@ const config = {
     project: true,
   },
   plugins: ["@typescript-eslint"],
-  ignorePatterns:["./public/"],
+  ignorePatterns: ["./public/", "./src/components/ui/"],
   extends: [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",
@@ -14,7 +14,7 @@ const config = {
   rules: {
     // These opinionated rules are enabled in stylistic-type-checked above.
     // Feel free to reconfigure them to your own preference.
-    '@typescript-eslint/no-floating-promises': 'off',
+    "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
     "@typescript-eslint/array-type": "off",

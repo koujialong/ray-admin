@@ -27,7 +27,7 @@ function MenuTable(params: MenuTableProps) {
   const reloadList = () => {
     reload(pathName);
   };
-  const deleteMenu = async (key: string) => {
+  const deleteMenu = (key: string) => {
     menuDeleteApi.mutate({ key });
   };
   const columns = useMemo(() => createColumns(menuDialogRef, deleteMenu), []);

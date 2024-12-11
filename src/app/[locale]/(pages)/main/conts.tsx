@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { ChartType } from "./components/chart";
 
 export type Card = {
   name: string;
@@ -89,4 +88,3 @@ export const cardList: Card[] = [
   },
 ];
 
-export const chartList: ChartType[] = ["radar", "pie", "radarBar"];

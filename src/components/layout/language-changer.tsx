@@ -57,7 +57,7 @@ export default function LanguageChanger() {
   };
 
   return (
-    <div className="mr-2 flex items-center dark:text-white">
+    <div className="flex items-center dark:text-white">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon">

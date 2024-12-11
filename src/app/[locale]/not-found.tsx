@@ -1,10 +1,9 @@
-import { Button, Result } from "antd";
 import Link from "next/link";
 
 export default function Index() {
   return (
     <div className="flex h-screen w-screen items-center justify-center">
-      <Result
+      {/* <Result
         status="404"
         title="404"
         subTitle="抱歉, 当前访问的页面不存在"
@@ -13,7 +12,7 @@ export default function Index() {
             <Link href="/main">返回主页</Link>
           </Button>
         }
-      />
+      /> */}
     </div>
   );
 }

@@ -9,5 +9,8 @@
   "password": "密码",
   "email": "邮箱",
   "please input": "请输入",
-  "error": "错误"
+  "error": "错误",
+  "Light": "浅色",
+  "Dark": "深色",
+  "System": "跟随系统"
 }

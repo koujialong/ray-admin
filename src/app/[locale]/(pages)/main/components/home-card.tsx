@@ -1,10 +1,13 @@
 "use client";
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { type Card } from "../conts";
 import { type CountUp } from "countup.js";
-import Chart from "./chart";
-import Loading from "@/app/[locale]/loading";
-import { resolve } from "path";
+import {
+  Card as CardContainer,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 function HomeCard({ info }: { info: Card }) {
   const countupRef = useRef<HTMLHeadingElement>(null);
@@ -23,24 +26,18 @@ function HomeCard({ info }: { info: Card }) {
     }
   }
   return (
-    <div className="flex h-full w-1/4 rounded-md bg-blue-50 p-4 text-slate-600 shadow-lg dark:bg-transparent dark:text-white dark:border dark:border-gray-700">
-      <div className="w-28">
-        <div className="text-xl ">{info.name}</div>
-        <div className="text-bas mt-2">{info.desc}</div>
-        <div className="mt-2 flex text-3xl text-blue-500 dark:text-white">
-          <div ref={countupRef}>0</div>
-          {info.unit && <span>{info.unit}</span>}
+    <CardContainer className="w-full">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{info.name}</CardTitle>
+        {info.icon}
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">
+          +<span ref={countupRef}>0</span>
         </div>
-      </div>
-      <div className="flex-1">
-        <Chart
-          options={{
-            grid: false,
-            chartType: "line",
-          }}
-        />
-      </div>
-    </div>
+        <p className="text-xs text-muted-foreground">{info.desc}</p>
+      </CardContent>
+    </CardContainer>
   );
 }
 

@@ -104,6 +104,7 @@ function Chart({ options }: { options: ChartOptions }) {
     );
   }, []);
   const ChartComponent = chartMap[chartType];
+  return <></>
   return (
     <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">

@@ -58,7 +58,6 @@ export const roleRouter = createTRPCRouter({
       const res = await ctx.db.role.findFirst({
         where: input,
       });
-      console.log("role======>", res, input);
       return res;
     }),
 

@@ -4,8 +4,7 @@ import { type NextRequest } from "next/server";
 import { env } from "@/env";
 import { appRouter } from "@/server/api/root";
 import { createTRPCContext } from "@/server/api/trpc";
-import { inferRouterContext, ProcedureType, TRPCError } from "@trpc/server";
-import { router } from "next/client";
+import { ProcedureType, TRPCError } from "@trpc/server";
 import { redirect } from "next/navigation";
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
@@ -32,21 +31,8 @@ const onError = ({
   if (env.NODE_ENV === "development") {
     console.error(`❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`);
   }
-
-  redirect('/login')
-
   if (error.code === "UNAUTHORIZED") {
-    if (path && window) {
-      // req.location = "/login";
-      // router.replace("/login");
-      // message.open({
-      //   type:'error',
-      //   content:'没权限'
-      // })
-      // redirect('/login')
-      // alert('没权限')
-    }
-    // window !== 'undefined'
+    redirect("/login");
   }
 };
 

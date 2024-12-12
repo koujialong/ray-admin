@@ -10,7 +10,6 @@ export const createColumns = (
   userDialogRef: React.MutableRefObject<UserModalRefType>,
   deleteUser: (id: string) => void,
 ): ColumnDef<User>[] => {
-  console.log("getColumns");
 
   return [
     {

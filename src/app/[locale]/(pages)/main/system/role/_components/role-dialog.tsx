@@ -99,7 +99,7 @@ function Index(params: RoleModalType, ref: Ref<RoleModalRefType>) {
         setOpen(false);
         params.reloadList();
       }
-    },
+    }
   });
 
   const getRoleMenuApi = api.role.getRoleMenu.useMutation({
@@ -161,9 +161,9 @@ function Index(params: RoleModalType, ref: Ref<RoleModalRefType>) {
           key: "order",
           type: "Input",
           placeholder: "请输入排序",
-          rule: z.number().min(0, "请输入排序"),
+          rule: z.string().min(0, "请输入排序"),
           defaultValue: 0,
-          inputType: "number",
+          // inputType: "number",
           disabled: viewType === "view",
         },
         {

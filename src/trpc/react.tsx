@@ -3,10 +3,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { type AppRouter } from "@/server/api/root";
 import { getUrl, transformer } from "./shared";
+import { TRPCError } from "@trpc/server";
+import { useToast } from "@/hooks/use-toast";
 
 export const api = createTRPCReact<AppRouter>();
 
@@ -14,7 +16,26 @@ export function TRPCReactProvider(props: {
   children: React.ReactNode;
   cookies: string;
 }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const { toast } = useToast();
+  const onError = useCallback((error: TRPCError) => {
+    toast({
+      variant: "destructive",
+      description: error.message,
+    });
+  }, []);
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            onError,
+          },
+          mutations: {
+            onError,
+          },
+        },
+      }),
+  );
 
   const [trpcClient] = useState(() =>
     api.createClient({
@@ -35,7 +56,7 @@ export function TRPCReactProvider(props: {
           },
         }),
       ],
-    })
+    }),
   );
 
   return (

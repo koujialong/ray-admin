@@ -11,7 +11,6 @@ export async function middleware(request: NextRequest) {
 
   if (!token) {
     const currentPath = request.nextUrl.pathname
-    console.log('currentPath',currentPath)
     if (!/\/(login|register)/.test(currentPath)) {
       return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
     }

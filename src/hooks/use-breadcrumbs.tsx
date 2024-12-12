@@ -28,13 +28,6 @@ export function useBreadcrumbs(menuList: MenuType[]) {
     return segments
       .map((segment, index) => {
         const menu = getMenuOrigin(segment, index);
-        console.log(
-          "segment",
-          segment,
-          menuList,
-          !menu,
-          menu?.menuType === "D",
-        );
         if (!menu) {
           return null;
         }

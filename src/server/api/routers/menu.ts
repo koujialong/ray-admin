@@ -169,7 +169,6 @@ export const menuRouter = createTRPCRouter({
         tree.push(map[key] as MenuType);
       }
     });
-    console.log("res=====>", tree, list);
     return tree;
   }),
 

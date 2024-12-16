@@ -4,6 +4,7 @@
   "english": "english",
   "sign in": "登录",
   "register": "注册",
+  "success": "成功",
   "sign out": "退出登录",
   "username": "用户名",
   "password": "密码",
@@ -17,5 +18,10 @@
   "Set Dark Theme": "设置深色主题",
   "Theme": "主题",
   "Search": "搜索",
-  "System": "跟随系统"
+  "System": "跟随系统",
+  "Rows per page": "每页",
+  "Showing": "显示",
+  "of": "共",
+  "entries": "条",
+  "Page": "页"
 }

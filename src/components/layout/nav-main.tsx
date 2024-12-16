@@ -1,7 +1,5 @@
 "use client";
 
-import * as Icons from "lucide-react";
-
 import {
   Collapsible,
   CollapsibleContent,
@@ -18,23 +16,25 @@ import {
 } from "@/components/ui/sidebar";
 import { type MenuType } from "@/app/types/menu";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { MENU_ICONS } from "@/app/[locale]/constant";
+import { ChevronRight } from "lucide-react";
 
 export function NavMain({ items }: { items: MenuType[] }) {
   const pathname = usePathname();
   const router = useRouter();
   const changeMenu = (selMenu: MenuType) => {
-    router.replace(selMenu.key)
+    router.replace(selMenu.key);
   };
 
-  const MenuIcon = ({ menu }: { menu: MenuType }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const IconComponent = Icons[menu.icon];
-    if (!IconComponent) {
-      console.warn(`Icon for ${menu.icon} not found`);
-      return null;
-    }
-    return <IconComponent />;
-  };
+  const [icons] = useState(() => {
+    const icons = {};
+    MENU_ICONS.forEach(({ name, icon }) => {
+      const MenuIcon = icon;
+      icons[name] = <MenuIcon />;
+    });
+    return icons;
+  });
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -54,9 +54,9 @@ export function NavMain({ items }: { items: MenuType[] }) {
                       tooltip={item.label}
                       className="cursor-pointer"
                     >
-                      {item.icon && <MenuIcon menu={item} />}
+                      {item.icon && icons[item.icon]}
                       <span>{item.label}</span>
-                      <Icons.ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
@@ -71,7 +71,7 @@ export function NavMain({ items }: { items: MenuType[] }) {
                             onClick={() => changeMenu(subItem)}
                           >
                             <a>
-                              {item.icon && <MenuIcon menu={subItem} />}
+                              {item.icon && icons[subItem.icon]}
                               <span>{subItem.label}</span>
                             </a>
                           </SidebarMenuSubButton>
@@ -90,7 +90,7 @@ export function NavMain({ items }: { items: MenuType[] }) {
                     className="cursor-pointer"
                   >
                     <a>
-                      {item.icon && <MenuIcon menu={item} />}
+                      {item.icon && icons[item.icon]}
                       <span>{item.label}</span>
                     </a>
                   </SidebarMenuButton>

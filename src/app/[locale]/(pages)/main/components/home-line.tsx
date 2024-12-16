@@ -12,11 +12,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
   { month: "February", desktop: 305, mobile: 200 },
@@ -38,11 +39,12 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function HomeLine({ className }: { className: string }) {
+  const { t } = useTranslation("dashboard");
   return (
     <Card className={`${className} flex flex-col`}>
       <CardHeader>
-        <CardTitle>Line Chart - Multiple</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>{t("trend")}</CardTitle>
+        <CardDescription>{t("January - June 2024")}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -84,10 +86,10 @@ export function HomeLine({ className }: { className: string }) {
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+              {t("January - June 2024")} <TrendingUp className="h-4 w-4" />
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Showing total visitors for the last 6 months
+              {t("Showing total visitors for the last 3 months")}
             </div>
           </div>
         </div>

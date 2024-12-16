@@ -9,7 +9,7 @@ import { Suspense } from "react";
 import Loading from "./loading";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
-const i18nNamespaces = ["common", "menu"];
+const i18nNamespaces = ["common", "menu", "dashboard"];
 
 export const metadata = {
   title: "Create T3 App",
@@ -24,7 +24,7 @@ export default async function RootLayout({ children, params }) {
   );
   return (
     <html lang="en">
-      <body className={`font-sans overflow-hidden`}>
+      <body className={`overflow-hidden font-sans`}>
         <TRPCReactProvider cookies={cookies().toString()}>
           <ThemeProvider
             attribute="class"

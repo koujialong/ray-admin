@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 export type Card = {
   name: string;
@@ -9,7 +9,7 @@ export type Card = {
 export const cardList: Card[] = [
   {
     name: "Total Revenue",
-    desc: "+20.1% from last month",
+    desc: "+20.1%",
     numb: 4523189,
     icon: (
       <svg
@@ -28,7 +28,7 @@ export const cardList: Card[] = [
   },
   {
     name: "Subscriptions",
-    desc: "+180.1% from last month",
+    desc: "+180.1%",
     numb: 2350,
     icon: (
       <svg
@@ -49,7 +49,7 @@ export const cardList: Card[] = [
   },
   {
     name: "Sales",
-    desc: "+19% from last month",
+    desc: "+19%",
     numb: 12234,
     icon: (
       <svg
@@ -69,7 +69,7 @@ export const cardList: Card[] = [
   },
   {
     name: "Active Now",
-    desc: "+201 since last hour",
+    desc: "+201",
     numb: 573,
     icon: (
       <svg

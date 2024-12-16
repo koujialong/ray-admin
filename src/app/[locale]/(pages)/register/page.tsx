@@ -2,35 +2,34 @@
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import { ConfigForm } from "@/components/form/config-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Register() {
   const { t } = useTranslation();
-  const regist = api.user.register.useMutation({
-    onSuccess(e) {
+  const { toast } = useToast();
+  const registerApi = api.user.register.useMutation({
+    onSuccess() {
+      toast({
+        title: `${t("register")} ${t("success")}`,
+      });
       router.replace("/login");
     },
   });
   const router = useRouter();
   const register = async (val) => {
-    regist.mutate({ ...val, role: 'common' } as User);
+    registerApi.mutate({ ...val, role: "common" } as User);
   };
 
   return (
-    <div
-      className="flex h-screen w-screen items-center justify-center bg-cover"
-      style={{
-        backgroundImage:
-          "url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80)",
-      }}
-    >
+    <div className="flex h-screen w-screen items-center justify-center bg-gray-200 bg-cover dark:bg-black">
       <div className="w-[1000px] py-16">
         <div className="mx-auto flex max-w-sm overflow-hidden rounded-lg bg-white bg-opacity-10 shadow-md backdrop-blur-lg backdrop-filter">
           <div className="w-full p-8 dark:bg-opacity-30">
-            <h2 className="mb-4 text-center text-2xl font-semibold text-white">
+            <h2 className="mb-4 text-center text-2xl font-semibold text-gray-700 dark:text-white">
               {t("register")}
             </h2>
             <ConfigForm
@@ -76,7 +75,7 @@ export default function Register() {
                   e.preventDefault();
                   router.push("/login");
                 }}
-                className="text-xs uppercase text-white"
+                className="text-xs uppercase text-gray-700 dark:text-white"
               >
                 {t("sign in")}
               </a>

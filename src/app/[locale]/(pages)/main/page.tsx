@@ -9,7 +9,7 @@ import { HomeRadar } from "./components/home-radar";
 import { HomeRing } from "./components/home-ring";
 import { HomeLine } from "./components/home-line";
 export default async function DashBoard({ params: { locale } }) {
-  const { t } = await initTranslations(locale as string, ["common"]);
+  const { t } = await initTranslations(locale as string, ["dashboard"]);
   return (
     <PageContainer scrollable={true}>
       <div className="flex h-1/5 gap-6">
@@ -21,7 +21,7 @@ export default async function DashBoard({ params: { locale } }) {
         <MainChart className="h-full w-2/3" />
         <CardContainer
           className="col-span-3 h-full w-1/3"
-          title={"Recent Sales"}
+          title={t("Recent Sales")}
           description="You made 265 sales this month."
         >
           <RecentSales />

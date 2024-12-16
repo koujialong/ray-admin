@@ -8,8 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
 
 function HomeCard({ info }: { info: Card }) {
+  const { t } = useTranslation('dashboard');
   const countupRef = useRef<HTMLHeadingElement>(null);
   let countUpAnim: CountUp;
   useEffect(() => {
@@ -28,14 +30,14 @@ function HomeCard({ info }: { info: Card }) {
   return (
     <CardContainer className="w-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{info.name}</CardTitle>
+        <CardTitle className="text-sm font-medium">{t(info.name)}</CardTitle>
         {info.icon}
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
           +<span ref={countupRef}>0</span>
         </div>
-        <p className="text-xs text-muted-foreground">{info.desc}</p>
+        <p className="text-xs text-muted-foreground">{info.desc} {t('from last month')}</p>
       </CardContent>
     </CardContainer>
   );

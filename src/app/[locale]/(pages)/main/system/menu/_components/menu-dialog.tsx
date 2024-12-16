@@ -1,11 +1,11 @@
 import { api } from "@/trpc/react";
 import React, { type Ref, useImperativeHandle, useRef, useState } from "react";
 import { MENU_ICONS, MENU_TYPE_MAP, STATUS } from "@/app/[locale]/constant";
-import { FormDialog, FromDialogRef } from "@/components/form-dialog";
+import { FormDialog, type FromDialogRef } from "@/components/form-dialog";
 import { z } from "zod";
-import { MenuType } from "@/app/types/menu";
+import { type MenuType } from "@/app/types/menu";
 import { useToast } from "@/hooks/use-toast";
-import { Menu } from "@prisma/client";
+import { type Menu } from "@prisma/client";
 
 type ViewType = "edit" | "view" | "add";
 

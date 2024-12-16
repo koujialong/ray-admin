@@ -1,5 +1,5 @@
 import React from "react";
-import { SidebarTrigger } from "../ui/sidebar";
+import { SidebarTrigger, useSidebar } from "../ui/sidebar";
 import { Separator } from "../ui/separator";
 import { Breadcrumbs } from "./breadcrumb";
 import { UserNav } from "../user-nav";

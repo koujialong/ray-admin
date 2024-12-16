@@ -12,11 +12,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 const chartData = [
   { month: "January", desktop: 186 },
   { month: "February", desktop: 305 },
@@ -33,17 +34,14 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function HomeRadar({
-  className,
-}: {
-  className: string;
-}) {
+export function HomeRadar({ className }: { className: string }) {
+  const { t } = useTranslation("dashboard");
   return (
     <Card className={`${className} flex flex-col`}>
       <CardHeader className="items-center">
-        <CardTitle>Radar Chart - Dots</CardTitle>
+        <CardTitle>{t("visitors")}</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          {t("Showing total visitors for the last 3 months")}
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
@@ -69,10 +67,11 @@ export function HomeRadar({
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          {t("Trending up by 5.2% this month")}{" "}
+          <TrendingUp className="h-4 w-4" />
         </div>
         <div className="flex items-center gap-2 leading-none text-muted-foreground">
-          January - June 2024
+          {t("January - June 2024")}
         </div>
       </CardFooter>
     </Card>

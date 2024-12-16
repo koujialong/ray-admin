@@ -9,6 +9,7 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { type MenuType } from "@/app/types/menu";
 
@@ -18,9 +19,16 @@ export function AppSidebar({
   config?: React.ComponentProps<typeof Sidebar>;
   menuTree: MenuType[];
 }) {
+  const { open } = useSidebar();
   return (
     <Sidebar collapsible="icon" {...props.config}>
-      <SidebarHeader>{'NEXT'}</SidebarHeader>
+      {open && (
+        <SidebarHeader
+          className={`${open ? "" : "h-0 w-0"} text-2xl ease-linear duration-100`}
+        >
+          {"RAY"}
+        </SidebarHeader>
+      )}
       <SidebarContent>
         <NavMain items={props.menuTree} />
       </SidebarContent>

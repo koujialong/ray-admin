@@ -4,6 +4,7 @@
   "english": "english",
   "sign in": "sign in",
   "register": "register",
+  "success": "success",
   "sign out": "sign out",
   "username": "username",
   "password": "password",
@@ -17,5 +18,10 @@
   "Set Dark Theme": "Set Dark Theme",
   "Theme": "Theme",
   "Search": "Search",
-  "System": "System"
+  "System": "System",
+  "Rows per page": "Rows per page",
+  "Showing": "Showing",
+  "of": "of",
+  "entries": "entries",
+  "Page": "Page"
 }

@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useEffect, useMemo } from "react";
+import { type ReactNode, useEffect, useMemo } from "react";
 import { PageContext } from "@/app/context/page-context";
 import { getSession } from "next-auth/react";
 import { userAtom } from "@/app/store/user";
@@ -13,7 +13,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import React from "react";
 import { reload } from "@/app/actions";
 import KBar from "@/components/kbar";
-import { MenuType } from "@/app/types/menu";
+import { type MenuType } from "@/app/types/menu";
 
 export default function Main({
   children,

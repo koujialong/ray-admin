@@ -27,6 +27,9 @@ export default function Login() {
     setLoading(false);
     if (auth?.ok) {
       location.href = "/main";
+      toast({
+        title: `${t("sign in")} ${t("success")}`,
+      });
     } else {
       toast({
         variant: "destructive",
@@ -36,18 +39,12 @@ export default function Login() {
   };
 
   return (
-    <div
-      className="flex h-screen w-screen items-center justify-center bg-cover"
-      style={{
-        backgroundImage:
-          "url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80)",
-      }}
-    >
+    <div className="flex h-screen w-screen items-center justify-center bg-gray-200 bg-cover dark:bg-black">
       <div className="w-[1000px] py-16">
         <div className="mx-auto flex max-w-sm overflow-hidden rounded-lg bg-white bg-opacity-10 shadow-lg backdrop-blur-lg backdrop-filter">
           <div className="w-full p-8 dark:bg-opacity-30">
-            <h2 className="mb-4 text-center text-2xl font-semibold text-white">
-              NEXT
+            <h2 className="mb-4 text-center text-2xl font-semibold text-gray-700 dark:text-white">
+              RAY
             </h2>
             <ConfigForm
               className="w-full"
@@ -85,7 +82,7 @@ export default function Login() {
                   e.preventDefault();
                   router.push("/register");
                 }}
-                className="text-xs uppercase text-white"
+                className="text-xs uppercase text-gray-700 dark:text-white"
               >
                 {t("register")}
               </a>

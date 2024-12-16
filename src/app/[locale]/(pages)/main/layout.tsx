@@ -1,7 +1,6 @@
 import Main from "./components/main";
 import { api } from "@/trpc/server";
-import KBar from "@/components/kbar";
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 export default async function RootLayout(props: { children: ReactNode }) {
   const { children } = props;

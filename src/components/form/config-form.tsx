@@ -61,10 +61,7 @@ interface FormItem {
   multiple?: boolean;
   disabled?: boolean;
 }
-function Index(
-  { formItems, onSubmit, ...props }: ConfigFormProps,
-  ref
-) {
+function Index({ formItems, onSubmit, ...props }: ConfigFormProps, ref) {
   useImperativeHandle(
     ref,
     () => ({
@@ -202,7 +199,9 @@ function Index(
                       <FormControl>{getField(item, field)}</FormControl>
                     </div>
                   </div>
-                  <FormMessage className="ml-[100px] mt-2" />
+                  <FormMessage
+                    className={`${item.title ? "ml-[100px]" : ""} mt-2`}
+                  />
                 </FormItem>
               )}
             />

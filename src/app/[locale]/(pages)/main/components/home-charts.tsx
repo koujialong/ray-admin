@@ -11,11 +11,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 const chartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
   { date: "2024-04-02", desktop: 97, mobile: 180 },
@@ -124,11 +125,8 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function MainChart({
-  className,
-}: {
-  className: string;
-}) {
+export function MainChart({ className }: { className: string }) {
+  const { t } = useTranslation("dashboard");
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("desktop");
 
@@ -144,9 +142,9 @@ export function MainChart({
     <Card className={className}>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Bar Chart - Interactive</CardTitle>
+          <CardTitle>{t("visitors trend")}</CardTitle>
           <CardDescription>
-            Showing total visitors for the last 3 months
+            {t("Showing total visitors for the last 3 months")}
           </CardDescription>
         </div>
         <div className="flex">
@@ -160,7 +158,7 @@ export function MainChart({
                 onClick={() => setActiveChart(chart)}
               >
                 <span className="text-xs text-muted-foreground">
-                  {chartConfig[chart].label}
+                  {t(chartConfig[chart].label)}
                 </span>
                 <span className="text-lg font-bold leading-none sm:text-3xl">
                   {total[key as keyof typeof total].toLocaleString()}

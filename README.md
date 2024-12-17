@@ -32,4 +32,4 @@ node --loader ts-node/esm .\prisma\seed.ts
 pnpm i
 pnpm dev
 ```
-默认账号：admin/admin
+默认账号：admin/admin@123

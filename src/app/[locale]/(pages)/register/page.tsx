@@ -7,6 +7,7 @@ import { ConfigForm } from "@/components/form/config-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { MD5 } from "@/lib/utils";
 
 export default function Register() {
   const { t } = useTranslation();
@@ -20,7 +21,8 @@ export default function Register() {
     },
   });
   const router = useRouter();
-  const register = async (val) => {
+  const register = async (val: User) => {
+    val.password = MD5(val.password) as string;
     registerApi.mutate({ ...val, role: "common" } as User);
   };
 

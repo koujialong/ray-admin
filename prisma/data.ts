@@ -3,7 +3,7 @@ export const users: Prisma.UserCreateInput[] = [
   {
     id: "clrhmuys30000qn1cq1whkroz",
     username: "admin",
-    password: "admin@123",
+    password: "e6e061838856bf47e1de730719fb2609",//admin@123
     email: "admin@123.com",
     emailVerified: null,
     image: null,
@@ -12,7 +12,7 @@ export const users: Prisma.UserCreateInput[] = [
   {
     id: "clrlokwig000d1jgx5kju70wf",
     username: "common",
-    password: "common",
+    password: "9efab2399c7c560b34de477b9aa0a465",//common
     email: "common@123.com",
     emailVerified: null,
     image: null,
@@ -21,7 +21,7 @@ export const users: Prisma.UserCreateInput[] = [
   {
     id: "clrlol83k000e1jgxfb8xxdbe",
     username: "test",
-    password: "test",
+    password: "098f6bcd4621d373cade4e832627b4f6",//test
     email: "test@123.com",
     emailVerified: null,
     image: null,

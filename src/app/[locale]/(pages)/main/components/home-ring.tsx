@@ -63,14 +63,15 @@ export function HomeRing({ className }: { className: string }) {
       <CardContent className="flex-1 items-center pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto flex max-h-[300px] items-center pt-10"
+          className="mx-auto mt-10 flex max-h-[300px] items-center"
         >
           <RadialBarChart
+            className="h-full"
             data={chartData}
             startAngle={-90}
             endAngle={380}
-            innerRadius={30}
-            outerRadius={120}
+            innerRadius={20}
+            outerRadius={100}
           >
             <ChartTooltip
               cursor={false}

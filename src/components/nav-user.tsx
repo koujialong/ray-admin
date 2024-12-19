@@ -23,6 +23,7 @@ import {
 import { useAtom } from "jotai";
 import { userAtom } from "@/app/store/user";
 import { useTranslation } from "react-i18next";
+import { signOut } from "next-auth/react";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -74,7 +75,7 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => signOut()}>
               <LogOut />
               {t("sign out")}
             </DropdownMenuItem>

@@ -11,7 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 function HomeCard({ info }: { info: Card }) {
-  const { t } = useTranslation('dashboard');
+  const { t } = useTranslation("dashboard");
   const countupRef = useRef<HTMLHeadingElement>(null);
   let countUpAnim: CountUp;
   useEffect(() => {
@@ -37,7 +37,9 @@ function HomeCard({ info }: { info: Card }) {
         <div className="text-2xl font-bold">
           +<span ref={countupRef}>0</span>
         </div>
-        <p className="text-xs text-muted-foreground">{info.desc} {t('from last month')}</p>
+        <p className="text-xs text-muted-foreground">
+          {info.desc} {t("from last month")}
+        </p>
       </CardContent>
     </CardContainer>
   );

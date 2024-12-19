@@ -2,6 +2,7 @@
 import { ConfigForm } from "@/components/form/config-form";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { MD5 } from "@/lib/utils";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -21,7 +22,7 @@ export default function Login() {
     setLoading(true);
     const auth = await signIn("credentials", {
       name: username,
-      password,
+      password: MD5(password),
       redirect: false,
     });
     setLoading(false);

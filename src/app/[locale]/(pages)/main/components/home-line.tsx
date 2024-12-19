@@ -41,7 +41,7 @@ const chartConfig = {
 export function HomeLine({ className }: { className: string }) {
   const { t } = useTranslation("dashboard");
   return (
-    <Card className={`${className} flex flex-col`}>
+    <Card className={`${className} flex flex-col justify-between`}>
       <CardHeader>
         <CardTitle>{t("trend")}</CardTitle>
         <CardDescription>{t("January - June 2024")}</CardDescription>

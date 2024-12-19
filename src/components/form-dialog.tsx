@@ -74,7 +74,7 @@ function Index(
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[550px]">
+      <DialogContent className="xs:max-w-[350px] sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
@@ -83,7 +83,7 @@ function Index(
           formItems={formItems}
           onSubmit={submit}
           footer={
-            <DialogFooter>
+            <DialogFooter className="xs:gap-4 sm:gap-0">
               <Button
                 variant="outline"
                 type="button"

@@ -17,15 +17,15 @@ import {
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { TreeDataItem, TreeView } from "../tree-view";
+import { type TreeDataItem, TreeView } from "../tree-view";
 import {
   forwardRef,
-  HTMLInputTypeAttribute,
+  type HTMLInputTypeAttribute,
   useImperativeHandle,
   useMemo,
 } from "react";
 import { z } from "zod";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -36,11 +36,9 @@ interface ConfigFormProps extends React.ButtonHTMLAttributes<HTMLDivElement> {
   onSubmit: (formData) => void;
 }
 export interface ConfigFromRef {
-  setFormData: (data: { [x: string]: any }) => void;
+  setFormData: (data: Record<string, any>) => void;
   form: UseFormReturn<
-    {
-      [x: string]: any;
-    },
+    Record<string, any>,
     any,
     undefined
   >;
@@ -89,7 +87,7 @@ function Index({ formItems, onSubmit, ...props }: ConfigFormProps, ref) {
     defaultValues,
   });
 
-  const setFormData = (data: { [x: string]: any }) => {
+  const setFormData = (data: Record<string, any>) => {
     Object.keys(data).forEach((key) => {
       form.setValue(key, data[key]);
     });
@@ -104,7 +102,7 @@ function Index({ formItems, onSubmit, ...props }: ConfigFormProps, ref) {
             placeholder={item.placeholder ?? ""}
             {...field}
             onChange={(res) => {
-              let val = res.target.value;
+              const val = res.target.value;
               field.onChange(item.inputType === "number" ? Number(val) : val);
             }}
           />

@@ -7,16 +7,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DialogProps } from "@radix-ui/react-dialog";
-import { z } from "zod";
+import { type DialogProps } from "@radix-ui/react-dialog";
+import { type z } from "zod";
 import {
   forwardRef,
-  HTMLInputTypeAttribute,
+  type HTMLInputTypeAttribute,
   useImperativeHandle,
   useRef,
 } from "react";
-import { TreeDataItem } from "./tree-view";
-import { ConfigForm, ConfigFromRef } from "./form/config-form";
+import { type TreeDataItem } from "./tree-view";
+import { ConfigForm, type ConfigFromRef } from "./form/config-form";
 
 interface Option<T> {
   title: string | JSX.Element;
@@ -45,7 +45,7 @@ interface FromDialogProps extends DialogProps {
 }
 
 export interface FromDialogRef<> {
-  setFormData: (data: { [x: string]: any }) => void;
+  setFormData: (data: Record<string, any>) => void;
 }
 
 function Index(

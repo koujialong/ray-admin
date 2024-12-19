@@ -2,8 +2,15 @@
 ## 数据库
 * 创建.env配置文件
 ```shell
-# 配置数据库连接，以mysql为例
-DATABASE_URL="mysql://{用户名}:{密码}@{域名}:{端口}/{库名}"
+# 配置数据库连接，以postgres为例
+DATABASE_URL="postgres://{用户名}:{密码}@{域名}:{端口}/{库名}"
+```
+修改/prisma/schema.prisma 到对应数据库类型
+```
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
 ```
 [其他数据库配置](https://www.prisma.io/docs/reference/database-reference/connection-urls#env)
 ```shell

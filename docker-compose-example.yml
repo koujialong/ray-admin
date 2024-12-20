@@ -1,0 +1,16 @@
+version: "1.0"
+services:
+  admin:
+    platform: "linux/amd64"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CLIENTVAR: "clientvar"
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    image: ray-docker
+    environment:
+      - DATABASE_URL="xxxx"
+      - NEXTAUTH_SECRET="xxxx"

@@ -53,6 +53,7 @@
     "i18next": "^23.8.2",
     "i18next-resources-to-backend": "^1.2.1",
     "jotai": "^2.6.1",
+    "js-cookie": "^3.0.5",
     "kbar": "^0.1.0-beta.45",
     "lucide-react": "^0.468.0",
     "next": "^14.0.4",

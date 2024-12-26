@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { api } from "@/trpc/react";
 import React, {
   type Ref,
@@ -7,10 +7,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { FormDialog, FromDialogRef } from "@/components/form-dialog";
+import { FormDialog, type FromDialogRef } from "@/components/form-dialog";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { Role, User } from "@prisma/client";
+import { type Role, type User } from "@prisma/client";
 
 type ViewType = "edit" | "view" | "add";
 
@@ -25,7 +25,7 @@ export interface UserModalType {
 function Index(params: UserModalType, ref: Ref<UserModalRefType>) {
   const [open, setOpen] = useState(false);
   const [viewType, setViewType] = useState<ViewType>("add");
-  const [id, setId] = useState<string>();
+  const [user, setUser] = useState<User>();
   const formRef = useRef<FromDialogRef>();
   const [roleOptions, setRoleOptions] = useState<Role[]>([]);
   const { toast } = useToast();
@@ -36,13 +36,17 @@ function Index(params: UserModalType, ref: Ref<UserModalRefType>) {
   const setModel = (open: boolean, type: ViewType, user?: User) => {
     setOpen(open);
     setViewType(type);
-    user && setId(user.id);
+    user && setUser(user);
+  };
+  useEffect(() => {
     if (open) {
-      if (user && ["view", "edit"].includes(type)) {
-        formRef?.current.setFormData(user);
+      if (user?.id && ["view", "edit"].includes(viewType)) {
+        requestAnimationFrame(() => {
+          formRef?.current?.setFormData(user);
+        });
       }
     }
-  };
+  }, [open, viewType, user]);
 
   useImperativeHandle(
     ref,
@@ -84,10 +88,10 @@ function Index(params: UserModalType, ref: Ref<UserModalRefType>) {
   });
 
   const submit = async (user: User) => {
-    if (viewType === "edit" && id) {
+    if (viewType === "edit" && user?.id) {
       userUpdateApi.mutate({
         ...user,
-        id
+        id: user?.id,
       });
       return;
     }
@@ -125,7 +129,7 @@ function Index(params: UserModalType, ref: Ref<UserModalRefType>) {
           type: "Input",
           placeholder: "请输入密码",
           rule: z.string().min(0, "请输入密码"),
-          defaultValue: '',
+          defaultValue: "",
           inputType: "password",
           disabled: viewType === "view",
         },
@@ -138,7 +142,7 @@ function Index(params: UserModalType, ref: Ref<UserModalRefType>) {
             key: role.roleKey,
           })),
           rule: z.string().min(0, "请选择用户角色"),
-          defaultValue: '',
+          defaultValue: "",
           multiple: true,
           disabled: viewType === "view",
         },

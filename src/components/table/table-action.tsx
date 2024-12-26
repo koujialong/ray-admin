@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 interface Action<T> {
   title: string;
+  disabled?: boolean;
   action: (params: T) => void;
 }
 function TableAction<T>({ row, actions }: { row: T; actions: Action<T>[] }) {
@@ -24,7 +25,10 @@ function TableAction<T>({ row, actions }: { row: T; actions: Action<T>[] }) {
       <DropdownMenuContent align="end">
         {actions.map((actionConfig, index) => (
           <Fragment key={actionConfig.title}>
-            <DropdownMenuItem onClick={() => actionConfig.action(row)}>
+            <DropdownMenuItem
+              disabled={actionConfig.disabled}
+              onClick={() => actionConfig.action(row)}
+            >
               {actionConfig.title}
             </DropdownMenuItem>
             {index !== actions.length - 1 && <DropdownMenuSeparator />}

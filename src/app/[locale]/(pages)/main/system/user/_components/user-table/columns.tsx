@@ -10,7 +10,6 @@ export const createColumns = (
   userDialogRef: React.MutableRefObject<UserModalRefType>,
   deleteUser: (id: string) => void,
 ): ColumnDef<User>[] => {
-
   return [
     {
       accessorKey: "username",
@@ -43,12 +42,14 @@ export const createColumns = (
           actions={[
             {
               title: "删除",
+              disabled: !row.original.editable,
               action: () => {
                 deleteUser(row.original.id);
               },
             },
             {
               title: "编辑",
+              disabled: !row.original.editable,
               action: () =>
                 userDialogRef?.current.setModel(true, "edit", row.original),
             },

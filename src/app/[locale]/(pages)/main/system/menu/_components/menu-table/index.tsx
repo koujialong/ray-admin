@@ -2,14 +2,14 @@
 import { DataTable } from "@/components/table/data-table";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Menu } from "@prisma/client";
+import { type Menu } from "@prisma/client";
 import { Plus } from "lucide-react";
 import React, { useMemo, useRef } from "react";
 import { createColumns } from "./columns";
 import { api } from "@/trpc/react";
 import { reload } from "@/app/actions";
 import { usePathname } from "next/navigation";
-import MenuDialog, { MenuDialogRefType } from "../menu-dialog";
+import MenuDialog, { type MenuDialogRefType } from "../menu-dialog";
 interface MenuTableProps {
   list: Menu[];
   total: number;
@@ -30,7 +30,10 @@ function MenuTable(params: MenuTableProps) {
   const deleteMenu = (key: string) => {
     menuDeleteApi.mutate({ key });
   };
-  const columns = useMemo(() => createColumns(menuDialogRef, deleteMenu), []);
+  const columns = useMemo(
+    () => createColumns(menuDialogRef, deleteMenu),
+    [],
+  );
   return (
     <div>
       <div className="flex items-start justify-end">

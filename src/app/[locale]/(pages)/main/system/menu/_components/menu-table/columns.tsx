@@ -2,9 +2,10 @@
 
 import { MENU_ICONS, MENU_TYPE_MAP, STATUS } from "@/app/[locale]/constant";
 import TableAction from "@/components/table/table-action";
-import { Menu } from "@prisma/client";
+import { type Menu } from "@prisma/client";
 import { type ColumnDef } from "@tanstack/react-table";
-import { MenuDialogRefType } from "../menu-dialog";
+import { type MenuDialogRefType } from "../menu-dialog";
+import { useToast } from "@/hooks/use-toast";
 export const createColumns = (
   menuDialogRef: React.MutableRefObject<MenuDialogRefType>,
   deleteMenu: (id: string) => void,
@@ -55,12 +56,14 @@ export const createColumns = (
           actions={[
             {
               title: "删除",
+              disabled: !row.original.editable,
               action: () => {
                 deleteMenu(row.original.key);
               },
             },
             {
               title: "编辑",
+              disabled: !row.original.editable,
               action: () =>
                 menuDialogRef?.current.setModel(true, "edit", row.original),
             },

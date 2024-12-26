@@ -12,6 +12,7 @@ import { type z } from "zod";
 import {
   forwardRef,
   type HTMLInputTypeAttribute,
+  type Ref,
   useImperativeHandle,
   useRef,
 } from "react";
@@ -50,16 +51,20 @@ export interface FromDialogRef<> {
 
 function Index(
   { title, open, formItems, setOpen, onSubmit }: FromDialogProps,
-  ref,
+  ref: Ref<FromDialogRef>,
 ) {
   const configFormRef = useRef<ConfigFromRef>(null);
-  useImperativeHandle(
+  useImperativeHandle<FromDialogRef, FromDialogRef>(
     ref,
     () => ({
-      setFormData: (data) => configFormRef.current?.setFormData(data),
+      setFormData,
     }),
     [],
   );
+
+  const setFormData = (data: Record<string, any>) => {
+    configFormRef.current?.setFormData(data);
+  };
 
   function submit(values) {
     onSubmit(values);

@@ -2,10 +2,10 @@
 
 import TableAction from "@/components/table/table-action";
 import { Button } from "@/components/ui/button";
-import { Role } from "@prisma/client";
+import { type Role } from "@prisma/client";
 import { type ColumnDef } from "@tanstack/react-table";
 import { STATUS } from "@/app/[locale]/constant";
-import { RoleModalRefType } from "../role-dialog";
+import { type RoleModalRefType } from "../role-dialog";
 
 export const createColumns = (
   ruleModalRef: React.MutableRefObject<RoleModalRefType>,
@@ -53,6 +53,7 @@ export const createColumns = (
           actions={[
             {
               title: "删除",
+              disabled: !row.original.editable,
               action: () => deleteRole(row.original.id),
             },
             {

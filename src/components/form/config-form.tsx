@@ -21,6 +21,7 @@ import { type TreeDataItem, TreeView } from "../tree-view";
 import {
   forwardRef,
   type HTMLInputTypeAttribute,
+  type Ref,
   useImperativeHandle,
   useMemo,
 } from "react";
@@ -31,23 +32,19 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
 interface ConfigFormProps extends React.ButtonHTMLAttributes<HTMLDivElement> {
-  formItems: Array<FormItem>;
+  formItems: Array<FormItemType>;
   footer?: React.ReactNode;
   onSubmit: (formData) => void;
 }
 export interface ConfigFromRef {
   setFormData: (data: Record<string, any>) => void;
-  form: UseFormReturn<
-    Record<string, any>,
-    any,
-    undefined
-  >;
+  form: UseFormReturn<Record<string, any>, any, undefined>;
 }
 interface Option<T> {
   title: string | JSX.Element;
   key: T;
 }
-interface FormItem {
+interface FormItemType {
   title?: string;
   key: string;
   type: "Input" | "Select" | "RadioGroup" | "Textarea" | "TreeView";
@@ -59,8 +56,11 @@ interface FormItem {
   multiple?: boolean;
   disabled?: boolean;
 }
-function Index({ formItems, onSubmit, ...props }: ConfigFormProps, ref) {
-  useImperativeHandle(
+function Index(
+  { formItems, onSubmit, ...props }: ConfigFormProps,
+  ref: Ref<ConfigFromRef>,
+) {
+  useImperativeHandle<ConfigFromRef, ConfigFromRef>(
     ref,
     () => ({
       setFormData,
@@ -69,7 +69,7 @@ function Index({ formItems, onSubmit, ...props }: ConfigFormProps, ref) {
     [],
   );
   const formSchema = useMemo(() => {
-    const schemaMap: Record<FormItem["key"], z.ZodSchema | undefined> = {};
+    const schemaMap: Record<FormItemType["key"], z.ZodSchema | undefined> = {};
     formItems.forEach((item) => {
       schemaMap[item.key] = item.rule || z.any();
     });
@@ -92,7 +92,7 @@ function Index({ formItems, onSubmit, ...props }: ConfigFormProps, ref) {
       form.setValue(key, data[key]);
     });
   };
-  const getField = (item: FormItem, field) => {
+  const getField = (item: FormItemType, field) => {
     switch (item.type) {
       case "Input":
         return (
@@ -178,6 +178,7 @@ function Index({ formItems, onSubmit, ...props }: ConfigFormProps, ref) {
     onSubmit(values);
   }
 
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(submit)} className="space-y-6">
@@ -188,7 +189,7 @@ function Index({ formItems, onSubmit, ...props }: ConfigFormProps, ref) {
               control={form.control}
               name={item.key}
               render={({ field }) => (
-                <FormItem>
+                <FormItem key={item.key}>
                   <div className="flex w-full items-center">
                     {item.title && (
                       <FormLabel className="w-1/5">{item.title}</FormLabel>

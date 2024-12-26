@@ -7,12 +7,12 @@ import React, {
   useState,
 } from "react";
 import { STATUS } from "@/app/[locale]/constant";
-import { FormDialog, FromDialogRef } from "@/components/form-dialog";
+import { FormDialog, type FromDialogRef } from "@/components/form-dialog";
 import { z } from "zod";
-import { MenuType } from "@/app/types/menu";
-import { IconComponent, TreeDataItem } from "@/components/tree-view";
+import { type MenuType } from "@/app/types/menu";
+import { type IconComponent, type TreeDataItem } from "@/components/tree-view";
 import { useToast } from "@/hooks/use-toast";
-import { Role } from "@prisma/client";
+import { type Role } from "@prisma/client";
 
 type ViewType = "edit" | "view" | "add";
 
@@ -58,6 +58,9 @@ function Index(params: RoleModalType, ref: Ref<RoleModalRefType>) {
       if (role && ["view", "edit"].includes(type)) {
         findRole.mutate({ id: role.id });
         getRoleMenuApi.mutate({ roleId: role.roleKey });
+        requestAnimationFrame(() => {
+          formRef?.current?.setFormData(role);
+        });
       }
     }
   };
@@ -99,7 +102,7 @@ function Index(params: RoleModalType, ref: Ref<RoleModalRefType>) {
         setOpen(false);
         params.reloadList();
       }
-    }
+    },
   });
 
   const getRoleMenuApi = api.role.getRoleMenu.useMutation({

@@ -38,7 +38,9 @@ function Index(params: MenuDialogType, ref: Ref<MenuDialogRefType>) {
     menu && setId(menu.id);
     if (open) {
       if (menu && ["view", "edit"].includes(type)) {
-        formRef?.current.setFormData(menu);
+        requestAnimationFrame(()=>{
+          formRef?.current.setFormData(menu);
+        })
       }
     }
     allMenuApi.mutate(menu?.id ?? "");

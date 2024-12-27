@@ -4,7 +4,7 @@ import initTranslations from "./i18n";
 import { cookies } from "next/headers";
 
 export default async function Index() {
-  const locale = cookies().get("NEXT_LOCALE")?.value || "cn";
+  const locale = (await cookies()).get("NEXT_LOCALE")?.value || "cn";
   const { t } = await initTranslations(locale, ["common"]);
   return (
     <div className="flex h-full w-full items-center justify-center">

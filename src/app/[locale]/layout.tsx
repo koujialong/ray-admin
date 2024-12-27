@@ -14,13 +14,19 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default async function RootLayout({ children, params }) {
+export default async function RootLayout(props) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const { resources } = await initTranslations(
     params.locale as string,
     i18nNamespaces,
   );
   return (
-    <TRPCReactProvider cookies={cookies().toString()}>
+    (<TRPCReactProvider cookies={(await cookies()).toString()}>
       <TranslationsProvider
         namespaces={i18nNamespaces}
         locale={params.locale as string}
@@ -29,6 +35,6 @@ export default async function RootLayout({ children, params }) {
         <Toaster />
         <Suspense fallback={<Loading />}>{children}</Suspense>
       </TranslationsProvider>
-    </TRPCReactProvider>
+    </TRPCReactProvider>)
   );
 }

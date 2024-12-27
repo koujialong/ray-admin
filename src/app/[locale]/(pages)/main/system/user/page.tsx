@@ -7,7 +7,8 @@ import { SearchParams } from "nuqs";
 type pageProps = {
   searchParams: SearchParams;
 };
-const UserList: React.FC = async ({ searchParams }: pageProps) => {
+const UserList: React.FC = async (props: pageProps) => {
+  const searchParams = await props.searchParams;
   searchParamsCache.parse(searchParams);
   const page = searchParamsCache.get("page");
   const pageLimit = searchParamsCache.get("limit");

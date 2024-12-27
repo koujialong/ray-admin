@@ -8,7 +8,13 @@ import { RecentSales } from "./components/recent-sales";
 import { HomeRadar } from "./components/home-radar";
 import { HomeRing } from "./components/home-ring";
 import { HomeLine } from "./components/home-line";
-export default async function DashBoard({ params: { locale } }) {
+export default async function DashBoard(props) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
   const { t } = await initTranslations(locale as string, ["dashboard"]);
   return (
     <PageContainer scrollable={true}>

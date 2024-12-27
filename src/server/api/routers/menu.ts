@@ -177,9 +177,7 @@ export const menuRouter = createTRPCRouter({
     .mutation(({ ctx, input }) => {
       return ctx.db.menu.findMany({
         where: {
-          NOT: {
-            id: input,
-          },
+          NOT: [{ menuType: "M" }],
           OR: [
             {
               parent: null,

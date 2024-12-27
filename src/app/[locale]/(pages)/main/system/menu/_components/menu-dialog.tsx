@@ -151,7 +151,6 @@ function Index(params: MenuDialogType, ref: Ref<MenuDialogRefType>) {
             title: label,
             key: id,
           })),
-          rule: z.string().min(0, "请选择父级菜单"),
           defaultValue: "",
           multiple: true,
           disabled: viewType === "view",

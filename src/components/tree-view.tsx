@@ -361,6 +361,7 @@ const TreeIcon = ({
     />
   ) : (
     <Checkbox
+      asChild
       checked={isSelected}
       className="mr-2 h-4 w-4 shrink-0"
       onClick={(e) => {

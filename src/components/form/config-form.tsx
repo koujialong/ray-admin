@@ -121,7 +121,7 @@ function Index(
             <SelectContent>
               <SelectGroup>
                 {item.options.map((option) => (
-                  <SelectItem value={option.key} key={item.key}>
+                  <SelectItem value={option.key} key={option.key}>
                     {option.title}
                   </SelectItem>
                 ))}

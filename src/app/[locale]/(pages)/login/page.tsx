@@ -57,6 +57,7 @@ export default function Login() {
                   rule: z
                     .string()
                     .min(1, `${t("please input")} ${t("username")}`),
+                  defaultValue: "",
                 },
                 {
                   key: "password",
@@ -66,6 +67,7 @@ export default function Login() {
                   rule: z
                     .string()
                     .min(1, `${t("please input")} ${t("password")}`),
+                  defaultValue: "",
                 },
               ]}
               onSubmit={login}
@@ -75,7 +77,9 @@ export default function Login() {
                 </Button>
               }
             />
-            <div className="text-sm my-2 text-gray-700 dark:text-gray-400">default: admin/admin@123</div>
+            <div className="my-2 text-sm text-gray-700 dark:text-gray-400">
+              default: admin/admin@123
+            </div>
             <div className="mt-4 flex items-center justify-between">
               <span className="w-1/5 border-b md:w-1/4"></span>
               <a

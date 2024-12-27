@@ -7,7 +7,8 @@ import { searchParamsCache } from "@/lib/search-params";
 type pageProps = {
   searchParams: SearchParams;
 };
-const MenuList: React.FC = async ({ searchParams }: pageProps) => {
+const MenuList: React.FC = async (props: pageProps) => {
+  const searchParams = await props.searchParams;
   searchParamsCache.parse(searchParams);
   const page = searchParamsCache.get("page");
   const pageLimit = searchParamsCache.get("limit");

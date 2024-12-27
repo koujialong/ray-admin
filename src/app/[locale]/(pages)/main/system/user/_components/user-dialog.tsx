@@ -26,7 +26,7 @@ function Index(params: UserModalType, ref: Ref<UserModalRefType>) {
   const [open, setOpen] = useState(false);
   const [viewType, setViewType] = useState<ViewType>("add");
   const [user, setUser] = useState<User>();
-  const formRef = useRef<FromDialogRef>();
+  const formRef = useRef<FromDialogRef>(null);
   const [roleOptions, setRoleOptions] = useState<Role[]>([]);
   const { toast } = useToast();
   useEffect(() => {

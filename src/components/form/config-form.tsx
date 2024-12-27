@@ -21,6 +21,7 @@ import { type TreeDataItem, TreeView } from "../tree-view";
 import {
   forwardRef,
   type HTMLInputTypeAttribute,
+  ReactNode,
   type Ref,
   useImperativeHandle,
   useMemo,
@@ -41,7 +42,7 @@ export interface ConfigFromRef {
   form: UseFormReturn<Record<string, any>, any, undefined>;
 }
 interface Option<T> {
-  title: string | JSX.Element;
+  title: string | ReactNode;
   key: T;
 }
 interface FormItemType {

@@ -11,15 +11,20 @@ export const createQueryClient = () =>
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
         staleTime: 30 * 1000,
-      },
-      dehydrate: {
-        serializeData: SuperJSON.serialize,
-        shouldDehydrateQuery: (query) =>
-          defaultShouldDehydrateQuery(query) ||
-          query.state.status === "pending",
-      },
-      hydrate: {
-        deserializeData: SuperJSON.deserialize,
-      },
+      }
     },
   });
+
+export const dehydrateQueries = (client) => {
+  return client.dehydrate({
+    dehydrateQueries: (query) =>
+      defaultShouldDehydrateQuery(query) || query.state.status === "pending",
+    serializeData: SuperJSON.serialize,
+  });
+};
+
+export const hydrateQueries = (client, dehydratedState) => {
+  return client.hydrate(dehydratedState, {
+    deserializeData: SuperJSON.deserialize,
+  });
+};

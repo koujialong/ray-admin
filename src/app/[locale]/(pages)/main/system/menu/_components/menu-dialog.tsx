@@ -24,7 +24,7 @@ function Index(params: MenuDialogType, ref: Ref<MenuDialogRefType>) {
   const [menuOption, setMenuOption] = useState<
     Array<MenuType & { id: string }>
   >([]);
-  const formRef = useRef<FromDialogRef>();
+  const formRef = useRef<FromDialogRef>(null);
   const { toast } = useToast();
   const allMenuApi = api.menu.getOtherAllMenu.useMutation({
     onSuccess(menus) {

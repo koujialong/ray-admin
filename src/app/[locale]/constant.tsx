@@ -27,14 +27,14 @@ import {
   AlignJustify,
   LucideProps,
 } from "lucide-react";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { ForwardRefExoticComponent, ReactNode, RefAttributes } from "react";
 
-export const MENU_TYPE_MAP: Record<string, JSX.Element> = {
+export const MENU_TYPE_MAP: Record<string, ReactNode> = {
   M: <Badge color="green">菜单</Badge>,
   D: <Badge color="blue">目录</Badge>,
 };
 
-export const STATUS: Record<string, JSX.Element> = {
+export const STATUS: Record<string, ReactNode> = {
   1: <Badge variant="destructive">停用</Badge>,
   0: <Badge variant="outline">启用</Badge>,
 };

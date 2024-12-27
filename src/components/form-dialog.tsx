@@ -12,6 +12,7 @@ import { type z } from "zod";
 import {
   forwardRef,
   type HTMLInputTypeAttribute,
+  ReactNode,
   type Ref,
   useImperativeHandle,
   useRef,
@@ -20,7 +21,7 @@ import { type TreeDataItem } from "./tree-view";
 import { ConfigForm, type ConfigFromRef } from "./form/config-form";
 
 interface Option<T> {
-  title: string | JSX.Element;
+  title: string | ReactNode;
   key: T;
 }
 

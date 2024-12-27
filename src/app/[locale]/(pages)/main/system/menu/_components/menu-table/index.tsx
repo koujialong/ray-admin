@@ -17,7 +17,7 @@ interface MenuTableProps {
 function MenuTable(params: MenuTableProps) {
   const { list, total } = params;
   const pathName = usePathname();
-  const menuDialogRef = useRef<MenuDialogRefType>();
+  const menuDialogRef = useRef<MenuDialogRefType>(null);
   const menuDeleteApi = api.menu.deleteMenuById.useMutation({
     onSuccess() {
       reloadList();

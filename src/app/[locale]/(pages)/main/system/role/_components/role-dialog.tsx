@@ -30,7 +30,7 @@ function Index(params: RoleModalType, ref: Ref<RoleModalRefType>) {
   const [id, setId] = useState<string>();
   const [selMenus, setSelMenus] = useState<string[]>([]);
   const [treeData, setTreeData] = useState<TreeDataItem[]>([]);
-  const formRef = useRef<FromDialogRef>();
+  const formRef = useRef<FromDialogRef>(null);
   const { toast } = useToast();
   useEffect(() => {
     menuApi.mutate({ isSetting: true });

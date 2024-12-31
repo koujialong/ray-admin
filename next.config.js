@@ -27,7 +27,7 @@ const config = {
         type: "memory",
       });
     }
-    // Important: return the modified config
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return config;
   },
 };

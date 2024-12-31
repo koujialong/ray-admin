@@ -9,6 +9,9 @@ const config = {
   output: "standalone",
   reactStrictMode: false,
   transpilePackages: ["lucide-react"],
+  experimental: {
+    reactCompiler: true,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

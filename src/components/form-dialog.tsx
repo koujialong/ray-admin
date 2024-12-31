@@ -46,7 +46,7 @@ interface FromDialogProps extends DialogProps {
   onSubmit: (formData) => void;
 }
 
-export interface FromDialogRef<> {
+export interface FromDialogRef {
   setFormData: (data: Record<string, any>) => void;
 }
 
